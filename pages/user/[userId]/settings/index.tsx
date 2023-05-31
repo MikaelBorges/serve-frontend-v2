@@ -6,7 +6,7 @@ export default function UserSettings() {
   const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
-  const userId = userCtx._id
+  const { userId } = userCtx
 
   if (userIdRoute !== userId) router.push("/")
 

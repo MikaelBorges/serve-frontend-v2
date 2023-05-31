@@ -2,8 +2,8 @@ import { createContext, useState, useEffect } from "react"
 import { useRouter } from "next/router"
 
 const UserContext = createContext({
-  _id: "",
-  isLogged: null,
+  userId: "",
+  userIsLogged: null,
   connectUser: () => {},
   disconnectUser: () => {}
 })
@@ -39,8 +39,8 @@ export const UserContextProvider = ({ children }) => {
   }
 
   const context = {
-    _id: userInfo._id,
-    isLogged: userInfo.isLogged,
+    userId: userInfo._id,
+    userIsLogged: userInfo.isLogged,
     connectUser: connectUserHandler,
     disconnectUser: disconnectUserHandler
   }

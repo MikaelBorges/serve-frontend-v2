@@ -5,7 +5,7 @@ import UserContext from "../../store/user-context"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const userCtx = useContext(UserContext)
-  const userIsLogged = userCtx.isLogged
+  const { userIsLogged } = userCtx
 
   return (
     <>

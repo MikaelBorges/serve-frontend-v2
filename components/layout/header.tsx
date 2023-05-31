@@ -4,8 +4,7 @@ import UserContext from "../../store/user-context"
 
 export default function Header() {
   const userCtx = useContext(UserContext)
-  const userIsLogged = userCtx.isLogged
-  const userId = userCtx._id
+  const { userId, userIsLogged } = userCtx
 
   return (
     <header className='flex justify-between'>
@@ -14,7 +13,7 @@ export default function Header() {
         (userIsLogged ? (
           <Link href={`/user/${userId}`}>profil</Link>
         ) : (
-          <Link href='/identify'>s'identifier</Link>
+          <Link href='/identity'>s'identifier</Link>
         ))}
     </header>
   )
