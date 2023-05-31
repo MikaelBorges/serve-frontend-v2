@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react"
 import { useRouter } from "next/router"
 
 const UserContext = createContext({
+  _id: "",
   isLogged: null,
   connectUser: () => {},
   disconnectUser: () => {}
@@ -9,28 +10,37 @@ const UserContext = createContext({
 
 export const UserContextProvider = ({ children }) => {
   const router = useRouter()
-  const [userIsLogged, setUserIsLogged] = useState(null)
+  //const [userIsLogged, setUserIsLogged] = useState(null)
+  const [userInfo, setUserInfo] = useState({})
 
   useEffect(() => {
+    //console.log("userInfo", Object.keys(userInfo).length)
     const token = localStorage.getItem("token")
-    if (token) setUserIsLogged(true)
-    else setUserIsLogged(false)
+
+    /* if (token) setUserIsLogged(true)
+    else setUserIsLogged(false) */
+
+    if (token) setUserInfo({ _id: "123", isLogged: true })
+    else setUserInfo({ _id: "", isLogged: false })
   }, [])
 
   const connectUserHandler = () => {
-    setUserIsLogged(true)
+    setUserInfo({ _id: "123", isLogged: true })
+    //setUserIsLogged(true)
     localStorage.setItem("token", "token")
     router.push("/")
   }
 
   const disconnectUserHandler = () => {
-    setUserIsLogged(false)
+    setUserInfo({ _id: "", isLogged: false })
+    //setUserIsLogged(false)
     localStorage.removeItem("token")
     router.push("/")
   }
 
   const context = {
-    isLogged: userIsLogged,
+    _id: userInfo._id,
+    isLogged: userInfo.isLogged,
     connectUser: connectUserHandler,
     disconnectUser: disconnectUserHandler
   }

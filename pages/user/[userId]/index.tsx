@@ -21,9 +21,9 @@ const ads = [
 
 export default function UserPage() {
   const router = useRouter()
-  console.log("router.query", router.query)
+  const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
-  const userIsLogged = userCtx.isLogged
+  const userId = userCtx._id
 
   const handleLogout = () => {
     userCtx.disconnectUser()
@@ -31,12 +31,12 @@ export default function UserPage() {
 
   return (
     <>
-      {router.query.userId === "userId" && (
+      {userIdRoute === userId && (
         <aside>
           <h1>Bonjour utilisateur</h1>
           <ul className='flex justify-between'>
-            <li className='dark:text-yellow-100'>
-              <Link href='/user/userId/settings'>Modifier mon compte</Link>
+            <li className='text-orange-400'>
+              <Link href={`/user/${userId}/settings`}>Modifier mon compte</Link>
             </li>
             <li>
               <button className='text-red-500' onClick={() => handleLogout()}>
@@ -46,7 +46,7 @@ export default function UserPage() {
           </ul>
         </aside>
       )}
-      <h2>Annonces de l'utilisateur</h2>
+      <h2>{ads.length ? "Annonces de l'utilisateur" : "Aucune annonce"}</h2>
       <AdList ads={ads} />
     </>
   )
