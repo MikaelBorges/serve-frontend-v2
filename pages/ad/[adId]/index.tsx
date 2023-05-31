@@ -1,12 +1,8 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router"
 
 export default function AdPage() {
   const router = useRouter()
-  console.log(router.query);
+  console.log("router.query", router.query)
 
-  return (
-    <div>
-      <h1>AdPage</h1>
-    </div>
-  )
+  return <h1>AdPage</h1>
 }
