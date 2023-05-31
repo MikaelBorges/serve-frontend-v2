@@ -1,47 +1,59 @@
+import { useEffect, useState } from "react"
 import AdList from "../components/adList/adList"
 
 const filters = [
   {
-    title: "Prix"
+    title: "Prix",
+    type: "text",
+    childs: ["min", "max"]
   },
   {
-    title: "Lieu"
+    title: "Lieu",
+    type: "text",
+    childs: ["ville"]
   },
   {
-    title: "Super user"
+    title: "Super user",
+    type: "radio",
+    childs: ["oui", "non"]
   },
   {
-    title: "Avec photos seulement"
+    title: "Avec photos seulement",
+    type: "radio",
+    childs: ["oui", "non"]
+  },
+  {
+    title: "Note",
+    type: "radio",
+    childs: ["1", "2", "3", "4", "5"]
   }
 ]
 
-const ads = [
-  {
-    _id: "1",
-    title: "Maçon"
-  },
-  {
-    _id: "2",
-    title: "Pompier"
-  },
-  {
-    _id: "3",
-    title: "Coiffeur"
-  }
-]
-
-export default function Home() {
+export default function Home({ posts }) {
   return (
     <>
       {filters.length && (
-        <ul className='bg-gray-400'>
-          {filters.map(({ title }, index) => (
-            <li key={index}>{title}</li>
-          ))}
-        </ul>
+        <aside className='bg-gray-700'>
+          <h2 className='font-bold'>Filtres :</h2>
+          <ul>
+            {filters.map(({ title }, index) => (
+              <li key={index}>{title}</li>
+            ))}
+          </ul>
+        </aside>
       )}
-      <h1>Toutes les annonces</h1>
-      {ads.length && <AdList ads={ads} />}
+      <h1 className='my-2'>Toutes les annonces</h1>
+
+      <AdList ads={posts} />
     </>
   )
+}
+
+export async function getStaticProps() {
+  const posts = await fetch("http://localhost:3306").then((r) => r.json())
+  return {
+    props: {
+      posts
+    }
+  }
 }

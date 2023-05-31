@@ -4,22 +4,7 @@ import { useRouter } from "next/router"
 import AdList from "../../../components/adList/adList"
 import Link from "next/link"
 
-const ads = [
-  {
-    _id: "1",
-    title: "Plombier"
-  },
-  {
-    _id: "2",
-    title: "Chauffeur"
-  },
-  {
-    _id: "3",
-    title: "Professeur"
-  }
-]
-
-export default function UserPage() {
+export default function UserPage({ posts }) {
   const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
@@ -46,8 +31,31 @@ export default function UserPage() {
           </ul>
         </aside>
       )}
-      <h2>{ads.length ? "Annonces de l'utilisateur" : "Aucune annonce"}</h2>
-      <AdList ads={ads} />
+      <h2>{posts.length ? "Annonces de l'utilisateur" : "Aucune annonce"}</h2>
+      <AdList ads={posts} />
     </>
   )
+}
+
+export async function getStaticProps({ params }) {
+  const posts = await fetch(`http://localhost:3306/user/${params.userId}`).then(
+    (r) => r.json()
+  )
+  return {
+    props: {
+      posts
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  const posts = await fetch("http://localhost:3306/getAllUsers").then((r) =>
+    r.json()
+  )
+  return {
+    paths: posts.map((post) => ({
+      params: { userId: post._id.toString() }
+    })),
+    fallback: false
+  }
 }

@@ -10,8 +10,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main>{children}</main>
-      {userIsLogged && <Footer />}
+      <main className='p-2'>{children}</main>
+      {/* {userIsLogged && <Footer />} */}
     </>
   )
 }

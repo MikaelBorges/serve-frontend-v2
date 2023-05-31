@@ -1,12 +1,23 @@
 import Link from "next/link"
+import Image from "next/image"
 
 export default function AdList({ ads }) {
   return (
     <ul className='flex flex-col'>
-      {ads.map(({ title, _id }) => (
-        <Link key={_id} href={`/ad/${_id}`}>
-          {title}
-        </Link>
+      {ads.map(({ title, _id, userId, imagesWork, imageUser }) => (
+        <li key={_id} className='flex bg-gray-700 mb-2'>
+          <Image src={imagesWork[0]} alt={title} width={150} height={150} />
+          <div className='flex justify-between w-full'>
+            <Link href={`/ad/${_id}`}>
+              <a className='underline h-fit'>{title}</a>
+            </Link>
+            <Link href={`/user/${userId}`}>
+              <a className='flex h-fit'>
+                <Image src={imageUser} alt='user' width={30} height={30} />
+              </a>
+            </Link>
+          </div>
+        </li>
       ))}
     </ul>
   )

@@ -7,7 +7,7 @@ export default function Header() {
   const { userId, userIsLogged } = userCtx
 
   return (
-    <header className='flex justify-between'>
+    <header className='flex justify-between bg-gray-700'>
       <Link href='/'>logo</Link>
       {userIsLogged !== null &&
         (userIsLogged ? (
