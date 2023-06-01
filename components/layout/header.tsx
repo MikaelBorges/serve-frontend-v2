@@ -13,7 +13,7 @@ export default function Header() {
         (userIsLogged ? (
           <Link href={`/user/${userId}`}>profil</Link>
         ) : (
-          <Link href='/identity'>s'identifier</Link>
+          <Link href='/identity'>s&apos;identifier</Link>
         ))}
     </header>
   )

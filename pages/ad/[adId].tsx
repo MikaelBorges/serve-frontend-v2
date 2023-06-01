@@ -1,4 +1,5 @@
-import Image from "next/image"
+import Image from 'next/image'
+import { config } from '../../utils/config'
 
 export default function Post({ post }) {
   return (
@@ -19,7 +20,7 @@ export default function Post({ post }) {
 
 export async function getStaticProps({ params }) {
   const post = await fetch(
-    `http://localhost:3306/retrieveUserAd/${params.adId}`
+    `${config.api_url}/retrieveUserAd/${params.adId}`
   ).then((r) => r.json())
   return {
     props: {
@@ -29,7 +30,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await fetch("http://localhost:3306").then((r) => r.json())
+  const posts = await fetch(config.api_url).then((r) => r.json())
   return {
     paths: posts.map((post) => ({
       params: { adId: post._id.toString() }

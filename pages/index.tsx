@@ -1,31 +1,31 @@
-import { useEffect, useState } from "react"
-import AdList from "../components/adList/adList"
+import AdList from '../components/adList/adList'
+import { config } from '../utils/config'
 
 const filters = [
   {
-    title: "Prix",
-    type: "text",
-    childs: ["min", "max"]
+    title: 'Prix',
+    type: 'text',
+    childs: ['min', 'max']
   },
   {
-    title: "Lieu",
-    type: "text",
-    childs: ["ville"]
+    title: 'Lieu',
+    type: 'text',
+    childs: ['ville']
   },
   {
-    title: "Super user",
-    type: "radio",
-    childs: ["oui", "non"]
+    title: 'Super user',
+    type: 'radio',
+    childs: ['oui', 'non']
   },
   {
-    title: "Avec photos seulement",
-    type: "radio",
-    childs: ["oui", "non"]
+    title: 'Avec photos seulement',
+    type: 'radio',
+    childs: ['oui', 'non']
   },
   {
-    title: "Note",
-    type: "radio",
-    childs: ["1", "2", "3", "4", "5"]
+    title: 'Note',
+    type: 'radio',
+    childs: ['1', '2', '3', '4', '5']
   }
 ]
 
@@ -44,13 +44,13 @@ export default function Home({ posts }) {
       )}
       <h1 className='my-2'>Toutes les annonces</h1>
 
-      <AdList ads={posts} />
+      {posts.length && <AdList ads={posts} />}
     </>
   )
 }
 
 export async function getStaticProps() {
-  const posts = await fetch("http://localhost:3306").then((r) => r.json())
+  const posts = await fetch(config.api_url).then((r) => r.json())
   return {
     props: {
       posts

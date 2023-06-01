@@ -11,7 +11,7 @@ const UserContext = createContext({
 export const UserContextProvider = ({ children }) => {
   const router = useRouter()
   //const [userIsLogged, setUserIsLogged] = useState(null)
-  const [userInfo, setUserInfo] = useState({})
+  const [userInfo, setUserInfo] = useState({ id: "", isLogged: false })
 
   useEffect(() => {
     //console.log("userInfo", Object.keys(userInfo).length)
@@ -21,7 +21,7 @@ export const UserContextProvider = ({ children }) => {
     else setUserIsLogged(false) */
 
     if (token) setUserInfo({ id: "62fc16903edbb27f94be99cf", isLogged: true })
-    else setUserInfo({ id: "", isLogged: false })
+    //else setUserInfo({ id: "", isLogged: false })
   }, [])
 
   const connectUserHandler = () => {

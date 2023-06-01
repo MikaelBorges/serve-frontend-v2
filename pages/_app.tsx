@@ -1,7 +1,7 @@
-import "../styles/globals.css"
-import Layout from "../components/layout/layout"
-import Head from "next/head"
-import { UserContextProvider } from "../store/user-context"
+import '../styles/globals.css'
+import Layout from '../components/layout/layout'
+import Head from 'next/head'
+import { UserContextProvider } from '../store/user-context'
 
 export default function MyApp({ Component, pageProps }) {
   return (

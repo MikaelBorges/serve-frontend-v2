@@ -1,8 +1,9 @@
-import { useContext } from "react"
-import UserContext from "../../../store/user-context"
-import { useRouter } from "next/router"
-import AdList from "../../../components/adList/adList"
-import Link from "next/link"
+import { useContext } from 'react'
+import UserContext from '../../../store/user-context'
+import { useRouter } from 'next/router'
+import AdList from '../../../components/adList/adList'
+import Link from 'next/link'
+import { config } from '../../../utils/config'
 
 export default function UserPage({ posts }) {
   const router = useRouter()
@@ -31,14 +32,14 @@ export default function UserPage({ posts }) {
           </ul>
         </aside>
       )}
-      <h2>{posts.length ? "Annonces de l'utilisateur" : "Aucune annonce"}</h2>
+      <h2>{posts.length ? "Annonces de l'utilisateur" : 'Aucune annonce'}</h2>
       <AdList ads={posts} />
     </>
   )
 }
 
 export async function getStaticProps({ params }) {
-  const posts = await fetch(`http://localhost:3306/user/${params.userId}`).then(
+  const posts = await fetch(`${config.api_url}/user/${params.userId}`).then(
     (r) => r.json()
   )
   return {
@@ -49,7 +50,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await fetch("http://localhost:3306/getAllUsers").then((r) =>
+  const posts = await fetch(`${config.api_url}/getAllUsers`).then((r) =>
     r.json()
   )
   return {
