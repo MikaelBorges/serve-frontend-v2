@@ -32,11 +32,7 @@ const filters = [
 ]
 
 export default function Home({ adsFetched }) {
-  const {
-    data: {
-      data: { allAds }
-    }
-  } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ['allAds'],
     () => {
       return axios(config.api_url) as any
@@ -47,6 +43,8 @@ export default function Home({ adsFetched }) {
       }
     }
   )
+
+  const { allAds } = data.data
 
   return (
     <>
@@ -60,8 +58,18 @@ export default function Home({ adsFetched }) {
           </ul>
         </aside>
       )}
-      <h1 className='my-2'>
+      {/* <h1 className='my-2'>
         {allAds.length ? 'Toutes les annonces' : 'Aucune annonces'}
+      </h1> */}
+
+      <h1 className='my-2'>
+        {isError
+          ? 'Erreur dans la récupération des annonces'
+          : isLoading
+          ? 'Chargement...'
+          : allAds.length
+          ? 'Toutes les annonces'
+          : 'Aucune annonces'}
       </h1>
 
       {Boolean(allAds.length) && <AdList ads={allAds} />}

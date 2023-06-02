@@ -8,11 +8,7 @@ export default function AdPage({ adFetched }) {
   const router = useRouter()
   const adIdRoute = router.query.adId
 
-  const {
-    data: {
-      data: { ad }
-    }
-  } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ['ad', adIdRoute],
     () => {
       return axios(`${config.api_url}/retrieveAd/${adIdRoute}`) as any
@@ -23,6 +19,8 @@ export default function AdPage({ adFetched }) {
       }
     }
   )
+
+  const { ad } = data.data
 
   return (
     <>
@@ -35,7 +33,13 @@ export default function AdPage({ adFetched }) {
           height={400}
         />
       ))}
-      <h1>{ad.title}</h1>
+      <h1>
+        {isError
+          ? "Erreur dans la récupération de l'annonce de l'utilisateur"
+          : isLoading
+          ? 'Chargement...'
+          : ad.title}
+      </h1>
     </>
   )
 }

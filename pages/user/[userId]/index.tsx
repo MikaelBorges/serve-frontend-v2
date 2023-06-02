@@ -13,11 +13,7 @@ export default function UserPage({ userAdsFetched }) {
   const userCtx = useContext(UserContext)
   const { userId } = userCtx
 
-  const {
-    data: {
-      data: { userAds }
-    }
-  } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ['userAds', userIdRoute],
     () => {
       return axios(`${config.api_url}/user/${userIdRoute}`) as any
@@ -29,7 +25,7 @@ export default function UserPage({ userAdsFetched }) {
     }
   )
 
-  console.log('userAds', userAds)
+  const { userAds } = data.data
 
   const handleLogout = () => {
     userCtx.disconnectUser()
@@ -53,7 +49,11 @@ export default function UserPage({ userAdsFetched }) {
         </aside>
       )}
       <h2>
-        {userAds.length
+        {isError
+          ? "Erreur dans la récupération des annonces de l'utilisateur"
+          : isLoading
+          ? 'Chargement...'
+          : userAds.length
           ? "Annonces de l'utilisateur"
           : "L'utilisateur n'a aucune annonce"}
       </h2>
