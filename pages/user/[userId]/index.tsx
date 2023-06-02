@@ -4,12 +4,32 @@ import { useRouter } from 'next/router'
 import AdList from '../../../components/adList/adList'
 import Link from 'next/link'
 import { config } from '../../../utils/config'
+import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 
-export default function UserPage({ posts }) {
+export default function UserPage({ userAdsFetched }) {
   const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
   const { userId } = userCtx
+
+  const {
+    data: {
+      data: { userAds }
+    }
+  } = useQuery(
+    ['userAds', userIdRoute],
+    () => {
+      return axios(`${config.api_url}/user/${userIdRoute}`) as any
+    },
+    {
+      initialData: {
+        data: userAdsFetched
+      }
+    }
+  )
+
+  console.log('userAds', userAds)
 
   const handleLogout = () => {
     userCtx.disconnectUser()
@@ -32,19 +52,28 @@ export default function UserPage({ posts }) {
           </ul>
         </aside>
       )}
-      <h2>{posts.length ? "Annonces de l'utilisateur" : 'Aucune annonce'}</h2>
-      <AdList ads={posts} />
+      <h2>
+        {userAds.length
+          ? "Annonces de l'utilisateur"
+          : "L'utilisateur n'a aucune annonce"}
+      </h2>
+      {Boolean(userAds.length) && <AdList ads={userAds} />}
     </>
   )
 }
 
 export async function getServerSideProps({ params }) {
-  const posts = await fetch(`${config.api_url}/user/${params.userId}`).then(
+  const data = await fetch(`${config.api_url}/user/${params.userId}`).then(
     (r) => r.json()
   )
+  if (!data) {
+    return {
+      notFound: true
+    }
+  }
   return {
     props: {
-      posts
+      userAdsFetched: data
     }
   }
 }

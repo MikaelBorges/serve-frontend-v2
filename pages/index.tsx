@@ -31,32 +31,25 @@ const filters = [
   }
 ]
 
-export default function Home({ allAds }) {
-  /* const {
+export default function Home({ adsFetched }) {
+  const {
     data: {
-      data: { ads }
+      data: { allAds }
     }
   } = useQuery(
-    ['ads'],
+    ['allAds'],
     () => {
       return axios(config.api_url) as any
     },
     {
       initialData: {
-        data: allAds
+        data: adsFetched
       }
     }
-  ) */
-
-  //console.log('allAds', allAds)
-  //console.log('ads', ads)
+  )
 
   return (
     <>
-      {/* {allAds.ads.map(({ _id, title }) => (
-        <p key={_id}>{title}</p>
-      ))} */}
-
       {filters.length && (
         <aside className='bg-gray-700'>
           <h2 className='font-bold'>Filtres :</h2>
@@ -67,9 +60,20 @@ export default function Home({ allAds }) {
           </ul>
         </aside>
       )}
-      <h1 className='my-2'>Toutes les annonces</h1>
+      <h1 className='my-2'>
+        {allAds.length ? 'Toutes les annonces' : 'Aucune annonces'}
+      </h1>
 
-      <AdList ads={allAds.ads} />
+      {Boolean(allAds.length) && <AdList ads={allAds} />}
     </>
   )
+}
+
+export async function getServerSideProps() {
+  const data = await fetch(config.api_url).then((r) => r.json())
+  return {
+    props: {
+      adsFetched: data
+    }
+  }
 }
