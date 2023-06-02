@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { useContext } from "react"
-import UserContext from "../../store/user-context"
+import Link from 'next/link'
+import { useContext } from 'react'
+import UserContext from '../store/user-context'
 
 export default function Header() {
   const userCtx = useContext(UserContext)

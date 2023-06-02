@@ -18,7 +18,7 @@ export default function Post({ post }) {
   )
 }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const post = await fetch(
     `${config.api_url}/retrieveUserAd/${params.adId}`
   ).then((r) => r.json())
@@ -26,15 +26,5 @@ export async function getStaticProps({ params }) {
     props: {
       post
     }
-  }
-}
-
-export async function getStaticPaths() {
-  const posts = await fetch(config.api_url).then((r) => r.json())
-  return {
-    paths: posts.map((post) => ({
-      params: { adId: post._id.toString() }
-    })),
-    fallback: false
   }
 }

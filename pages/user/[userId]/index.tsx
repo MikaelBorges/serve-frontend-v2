@@ -38,7 +38,7 @@ export default function UserPage({ posts }) {
   )
 }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const posts = await fetch(`${config.api_url}/user/${params.userId}`).then(
     (r) => r.json()
   )
@@ -46,17 +46,5 @@ export async function getStaticProps({ params }) {
     props: {
       posts
     }
-  }
-}
-
-export async function getStaticPaths() {
-  const posts = await fetch(`${config.api_url}/getAllUsers`).then((r) =>
-    r.json()
-  )
-  return {
-    paths: posts.map((post) => ({
-      params: { userId: post._id.toString() }
-    })),
-    fallback: false
   }
 }
