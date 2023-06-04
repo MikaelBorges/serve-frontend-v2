@@ -1,7 +1,7 @@
 import Header from './header'
 import Footer from './footer'
 import { useContext } from 'react'
-import UserContext from '../store/user-context'
+import UserContext from '../store/userContext'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const userCtx = useContext(UserContext)

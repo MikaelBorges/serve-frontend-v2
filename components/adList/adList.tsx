@@ -7,9 +7,9 @@ export default function AdList({ ads }) {
       {ads.map(({ title, _id, userId, imagesWork, imageUser }) => (
         <li key={_id} className='flex bg-gray-700 mb-2'>
           <Image src={imagesWork[0]} alt={title} width={150} height={150} />
-          <div className='flex justify-between w-full'>
+          <div className='flex w-full'>
             <Link href={`/ad/${_id}`}>
-              <a className='underline h-fit'>{title}</a>
+              <a className='h-full w-full'>{title}</a>
             </Link>
             <Link href={`/user/${userId}`}>
               <a className='flex h-fit'>

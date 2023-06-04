@@ -48,7 +48,7 @@ export default function Home({ adsFetched }) {
 
   return (
     <>
-      {filters.length && (
+      {/* {filters.length && (
         <aside className='bg-gray-700'>
           <h2 className='font-bold'>Filtres :</h2>
           <ul>
@@ -57,10 +57,7 @@ export default function Home({ adsFetched }) {
             ))}
           </ul>
         </aside>
-      )}
-      {/* <h1 className='my-2'>
-        {allAds.length ? 'Toutes les annonces' : 'Aucune annonces'}
-      </h1> */}
+      )} */}
 
       <h1 className='my-2'>
         {isError

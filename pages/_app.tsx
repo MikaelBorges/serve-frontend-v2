@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import Layout from '../layout/layout'
 import Head from 'next/head'
-import { UserContextProvider } from '../store/user-context'
+import { UserContextProvider } from '../store/userContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useState } from 'react'

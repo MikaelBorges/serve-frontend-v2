@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import UserContext from '../../../store/user-context'
+import UserContext from '../../../store/userContext'
 import { useRouter } from 'next/router'
 import AdList from '../../../components/adList/adList'
 import Link from 'next/link'
@@ -8,10 +8,12 @@ import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 
 export default function UserPage({ userAdsFetched }) {
+  const userPageFirstname = userAdsFetched.userFirstname
+  const hour = new Date().getHours()
   const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
-  const { userId } = userCtx
+  const { userId, userFirstname } = userCtx
 
   const { data, isLoading, isError } = useQuery(
     ['userAds', userIdRoute],
@@ -35,7 +37,9 @@ export default function UserPage({ userAdsFetched }) {
     <>
       {userIdRoute === userId && (
         <aside>
-          <h1>Bonjour utilisateur</h1>
+          <h2>
+            {hour > 6 && hour < 20 ? 'Bonjour' : 'Bonsoir'} {userFirstname}
+          </h2>
           <ul className='flex justify-between'>
             <li className='text-orange-400'>
               <Link href={`/user/${userId}/settings`}>Modifier mon compte</Link>
@@ -48,16 +52,30 @@ export default function UserPage({ userAdsFetched }) {
           </ul>
         </aside>
       )}
-      <h2>
-        {isError
-          ? "Erreur dans la récupération des annonces de l'utilisateur"
-          : isLoading
+      <h1>
+        {isLoading
           ? 'Chargement...'
           : userAds.length
-          ? "Annonces de l'utilisateur"
+          ? userIdRoute === userId
+            ? 'Voici vos annonces'
+            : `Annonces de ${userPageFirstname}`
+          : userIdRoute === userId
+          ? "Vous n'avez aucune annonce"
           : "L'utilisateur n'a aucune annonce"}
-      </h2>
+      </h1>
       {Boolean(userAds.length) && <AdList ads={userAds} />}
+      {isError && (
+        <div className='absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center'>
+          <p className='p-10 bg-slate-500'>
+            Erreur dans la récupération de l&apos;utilisateur
+            <Link href={'/'}>
+              <a className='underline block'>
+                cliquer ici pour revenir à l&apos;acceuil
+              </a>
+            </Link>
+          </p>
+        </div>
+      )}
     </>
   )
 }

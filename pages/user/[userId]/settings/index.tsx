@@ -1,5 +1,5 @@
 /* import { useContext } from "react"
-import UserContext from "../../../../store/user-context"
+import UserContext from "../../../../store/userContext"
 import { useRouter } from "next/router" */
 
 export default function UserSettings() {
