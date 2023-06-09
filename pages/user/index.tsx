@@ -1,54 +1,74 @@
 import { useContext, useState } from 'react'
-import UserContext from '../../store/userContext'
-import { useForm } from 'react-hook-form'
+//import UserContext from '../../store/userContext'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import Input from '../../components/input/input'
 import { config } from '../../utils/config'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { DevTool } from '@hookform/devtools'
+import { FormValues } from './types'
 
-export default function IndentifyPage() {
+type OtherFields = {
+  type: string
+  name: string
+  title: string
+}
+
+export default function IndentifyPage(): JSX.Element {
   const router = useRouter()
-  const [userExist, setUserExist] = useState(null)
-  const userCtx = useContext(UserContext)
-  const { userIsLogged } = userCtx
+  const [userExist, setUserExist] = useState<boolean | null>(null)
+  //const userCtx = useContext(UserContext)
+  //const { userIsLogged } = userCtx
+  const userIsLogged = false
   if (userIsLogged) router.push('/')
 
   const {
+    control,
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm()
+  } = useForm<FormValues>({
+    mode: 'onChange'
+  })
 
-  const onSubmit = async (data) => {
-    //console.log('data', data)
+  /* const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm<FormValues>() */
 
-    if (userExist !== null) {
-      console.log('userExist', userExist)
-      if (userExist) {
-        console.log("L'email existe, on part juste obtenir un token")
-        //console.log('connect user')
-        userCtx.connectUser()
-      } else {
-        console.log('on part direct enregistrer les données')
-      }
-    } else {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    //const onSubmit = async (data: FormValues) => {
+    console.log('data', data)
+
+    if (userExist === null) {
       console.log("vérification si l'email est dans la bdd...")
 
       //Vérification
       const response = await axios.post(`${config.api_url}/user/identify`, data)
       const { emailExist } = response.data
-
-      if (emailExist) {
-        console.log("L'email existe, on demande juste le password")
-      } else {
-        console.log("L'email n'existe pas, l'user doit créer son compte")
-      }
-
       setUserExist(emailExist)
+    } else {
+      console.log('userExist', userExist)
+      if (userExist) {
+        /* const response = await axios.post(`${config.api_url}/user/login`, data)
+        const { token } = response.data
+        const { _id, firstname, imageUser } = response.data.session.user */
+        //userCtx.connectUser(_id, firstname, token, imageUser)
+        console.log("on part obtenir un token pour l'user")
+      } else {
+        console.log('on part direct enregistrer les données')
+
+        /* const response = await axios.post(
+          `${config.api_url}/user/register`,
+          data
+        )
+        console.log('response', response) */
+      }
     }
   }
 
-  const otherFields = [
+  const otherFields: OtherFields[] = [
     {
       type: 'text',
       name: 'firstname',
@@ -66,6 +86,20 @@ export default function IndentifyPage() {
     }
   ]
 
+  //console.log('errors', errors)
+
+  const getErrorMessage = (name: string) => {
+    switch (name) {
+      case 'firstname':
+        return errors.firstname?.message
+      case 'lastname':
+        return errors.lastname?.message
+      case 'phone':
+        return errors.phone?.message
+      default:
+        return undefined
+    }
+  }
   return (
     <>
       <h1 className='text-3xl'>Identifiez-vous</h1>
@@ -75,7 +109,7 @@ export default function IndentifyPage() {
           type='text'
           name='email'
           title='Votre email'
-          registerProps={{
+          register={{
             ...register('email', {
               required: true,
               minLength: {
@@ -88,7 +122,7 @@ export default function IndentifyPage() {
               }
             })
           }}
-          errorMsg={errors.email?.message}
+          errorMessage={errors.email?.message}
         />
 
         {userExist !== null && (
@@ -103,7 +137,7 @@ export default function IndentifyPage() {
             type='password'
             name='password'
             title='Votre mot de passe'
-            registerProps={{
+            register={{
               ...register('password', {
                 required: true,
                 minLength: {
@@ -112,21 +146,21 @@ export default function IndentifyPage() {
                 }
               })
             }}
-            errorMsg={errors.password?.message}
+            errorMessage={errors.password?.message}
           />
         )}
         {userExist === false && (
           <>
-            {otherFields.map(({ type, name, title }) => (
+            {otherFields.map(({ type, name, title }: any) => (
               <Input
                 key={name}
                 type={type}
                 name={name}
                 title={title}
-                registerProps={{
+                register={{
                   ...register(name, { required: true })
                 }}
-                errorMsg={errors.name?.message}
+                errorMessage={getErrorMessage(name)}
               />
             ))}
           </>
@@ -137,6 +171,9 @@ export default function IndentifyPage() {
           {userExist === false && 'Créer mon compte'}
         </button>
       </form>
+      <div>
+        <DevTool control={control} />
+      </div>
     </>
   )
 }

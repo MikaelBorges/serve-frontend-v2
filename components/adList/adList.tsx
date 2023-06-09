@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { AdListProps } from './types'
 
-export default function AdList({ ads }) {
+export default function AdList({ ads }: AdListProps): JSX.Element {
   return (
     <ul className='flex flex-col'>
       {ads.map(({ title, _id, userId, imagesWork, imageUser }) => (

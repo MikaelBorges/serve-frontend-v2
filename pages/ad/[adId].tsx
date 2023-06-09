@@ -4,8 +4,27 @@ import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import type { GetServerSidePropsResult } from 'next'
 
-export default function AdPage({ adFetched }) {
+export async function getServerSideProps({
+  params
+}): Promise<GetServerSidePropsResult<unknown>> {
+  const data = await fetch(`${config.api_url}/retrieveAd/${params.adId}`).then(
+    (r) => r.json()
+  )
+  if (!data) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: {
+      adFetched: data
+    }
+  }
+}
+
+export default function AdPage({ adFetched }): JSX.Element {
   const router = useRouter()
   const adIdRoute = router.query.adId
 
@@ -49,20 +68,4 @@ export default function AdPage({ adFetched }) {
       )}
     </>
   )
-}
-
-export async function getServerSideProps({ params }) {
-  const data = await fetch(`${config.api_url}/retrieveAd/${params.adId}`).then(
-    (r) => r.json()
-  )
-  if (!data) {
-    return {
-      notFound: true
-    }
-  }
-  return {
-    props: {
-      adFetched: data
-    }
-  }
 }

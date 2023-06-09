@@ -2,6 +2,8 @@ import AdList from '../components/adList/adList'
 import { config } from '../utils/config'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { CardType, AdsFetched } from '../types'
+import type { GetServerSidePropsResult } from 'next'
 
 const filters = [
   {
@@ -31,7 +33,37 @@ const filters = [
   }
 ]
 
-export default function Home({ adsFetched }) {
+export async function getServerSideProps(): Promise<
+  GetServerSidePropsResult<AdsFetched>
+> {
+  const data: CardType[] = await fetch(config.api_url).then((r) => r.json())
+  return {
+    props: {
+      adsFetched: data
+    }
+  }
+}
+
+const Welcome = ({
+  user,
+  primary
+}: {
+  user: null | string
+  primary: boolean
+}) => {
+  const userFirstname = user !== null ? ` ${user}` : ''
+  return (
+    <>
+      {primary ? (
+        <h1>Welcome{userFirstname}!</h1>
+      ) : (
+        <h2>Welcome{userFirstname}!</h2>
+      )}
+    </>
+  )
+}
+
+export default function Home({ adsFetched }: AdsFetched): JSX.Element {
   const { data, isLoading, isError } = useQuery(
     ['allAds'],
     () => {
@@ -48,6 +80,8 @@ export default function Home({ adsFetched }) {
 
   return (
     <>
+      {/* <Welcome user='sf' primary /> */}
+
       {/* {filters.length && (
         <aside className='bg-gray-700'>
           <h2 className='font-bold'>Filtres :</h2>
@@ -72,13 +106,4 @@ export default function Home({ adsFetched }) {
       {Boolean(allAds.length) && <AdList ads={allAds} />}
     </>
   )
-}
-
-export async function getServerSideProps() {
-  const data = await fetch(config.api_url).then((r) => r.json())
-  return {
-    props: {
-      adsFetched: data
-    }
-  }
 }

@@ -1,19 +1,40 @@
 import { useContext } from 'react'
-import UserContext from '../../../store/userContext'
+//import UserContext from '../../../store/userContext'
 import { useRouter } from 'next/router'
 import AdList from '../../../components/adList/adList'
 import Link from 'next/link'
 import { config } from '../../../utils/config'
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
+import type { GetServerSidePropsResult } from 'next'
 
-export default function UserPage({ userAdsFetched }) {
+export async function getServerSideProps({
+  params
+}): Promise<GetServerSidePropsResult<unknown>> {
+  const data = await fetch(`${config.api_url}/user/${params.userId}`).then(
+    (r) => r.json()
+  )
+  if (!data) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: {
+      userAdsFetched: data
+    }
+  }
+}
+
+export default function UserPage({ userAdsFetched }): JSX.Element {
   const userPageFirstname = userAdsFetched.userFirstname
   const hour = new Date().getHours()
   const router = useRouter()
   const userIdRoute = router.query.userId
-  const userCtx = useContext(UserContext)
-  const { userId, userFirstname } = userCtx
+  //const userCtx = useContext(UserContext)
+  //const { userId, userFirstname } = userCtx
+  const userFirstname = 'John'
+  const userId = '62fc16903edbb27f94be99cf'
 
   const { data, isLoading, isError } = useQuery(
     ['userAds', userIdRoute],
@@ -29,8 +50,10 @@ export default function UserPage({ userAdsFetched }) {
 
   const { userAds } = data.data
 
-  const handleLogout = () => {
-    userCtx.disconnectUser()
+  const handleLogout = async () => {
+    const response = await axios.post(`${config.api_url}/user/logout`)
+    console.log('response.data.message', response.data.message)
+    //userCtx.disconnectUser()
   }
 
   return (
@@ -78,20 +101,4 @@ export default function UserPage({ userAdsFetched }) {
       )}
     </>
   )
-}
-
-export async function getServerSideProps({ params }) {
-  const data = await fetch(`${config.api_url}/user/${params.userId}`).then(
-    (r) => r.json()
-  )
-  if (!data) {
-    return {
-      notFound: true
-    }
-  }
-  return {
-    props: {
-      userAdsFetched: data
-    }
-  }
 }

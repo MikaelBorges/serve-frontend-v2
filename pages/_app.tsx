@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useState } from 'react'
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }): JSX.Element {
   const [queryClient] = useState(() => new QueryClient())
 
   return (

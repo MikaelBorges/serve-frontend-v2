@@ -2,7 +2,7 @@
 import UserContext from "../../../../store/userContext"
 import { useRouter } from "next/router" */
 
-export default function UserSettings() {
+export default function UserSettings(): JSX.Element {
   /* const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)

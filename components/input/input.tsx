@@ -1,11 +1,13 @@
+import { InputProps } from './types'
+
 export default function Input({
   name,
-  registerProps,
+  register,
   type,
   title,
-  errorMsg,
+  errorMessage,
   disabled
-}) {
+}: InputProps): JSX.Element {
   return (
     <label htmlFor={name} className='mb-4'>
       {title}
@@ -16,9 +18,9 @@ export default function Input({
         type={type}
         name={name}
         placeholder={title}
-        {...registerProps}
+        {...register}
       />
-      {errorMsg && <p className='text-red-500'>{errorMsg}</p>}
+      {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
     </label>
   )
 }
