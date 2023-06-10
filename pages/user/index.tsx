@@ -1,25 +1,28 @@
 import { useContext, useState } from 'react'
-//import UserContext from '../../store/userContext'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import Input from '../../components/input/input'
 import { config } from '../../utils/config'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { DevTool } from '@hookform/devtools'
-import { FormValues } from './types'
-
-type OtherFields = {
-  type: string
-  name: string
-  title: string
-}
+import {
+  FormValuesType,
+  OtherFieldsType,
+  MessageCreateAccountType
+} from './types'
+import { UserContext } from '../../contexts/userContext/userContext'
+import { useQuery } from '@tanstack/react-query'
 
 export default function IndentifyPage(): JSX.Element {
   const router = useRouter()
   const [userExist, setUserExist] = useState<boolean | null>(null)
-  //const userCtx = useContext(UserContext)
+  const [apiResponseMessage, setApiResponseMessage] =
+    useState<MessageCreateAccountType | null>(null)
+  const userCtx = useContext(UserContext)
+  //console.log('userCtx LOGIN PAGE', userCtx)
   //const { userIsLogged } = userCtx
-  const userIsLogged = false
+  //const userIsLogged = false
+  const userIsLogged = userCtx.user?.token
   if (userIsLogged) router.push('/')
 
   const {
@@ -27,7 +30,7 @@ export default function IndentifyPage(): JSX.Element {
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm<FormValues>({
+  } = useForm<FormValuesType>({
     mode: 'onChange'
   })
 
@@ -35,60 +38,87 @@ export default function IndentifyPage(): JSX.Element {
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm<FormValues>() */
+  } = useForm<FormValuesType>() */
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    //const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValuesType> = async (data) => {
+    //const onSubmit = async (data: FormValuesType) => {
     console.log('data', data)
 
     if (userExist === null) {
-      console.log("vérification si l'email est dans la bdd...")
-
-      //Vérification
       const response = await axios.post(`${config.api_url}/user/identify`, data)
       const { emailExist } = response.data
       setUserExist(emailExist)
     } else {
-      console.log('userExist', userExist)
       if (userExist) {
-        /* const response = await axios.post(`${config.api_url}/user/login`, data)
+        /* const { data, isLoading, isError } = useQuery(
+          ['loginUser'],
+          () => {
+            return axios.post(`${config.api_url}/user/login`, data) as any
+          }
+        )
+        console.log('data', data)
+        console.log('isLoading', isLoading)
+        console.log('isError', isError) */
+        const response = await axios.post(`${config.api_url}/user/login`, data)
+        console.log('response', response)
+        if (response.status !== 200) {
+          setApiResponseMessage({
+            text: 'Erreur de connexion',
+            statusIsSuccess: false
+          })
+        }
         const { token } = response.data
-        const { _id, firstname, imageUser } = response.data.session.user */
-        //userCtx.connectUser(_id, firstname, token, imageUser)
-        console.log("on part obtenir un token pour l'user")
+        const { _id, firstname, imageUser } = response.data.session.user
+        userCtx.setUser({ _id, firstname, token, imageUser })
       } else {
-        console.log('on part direct enregistrer les données')
-
-        /* const response = await axios.post(
+        const response = await axios.post(
           `${config.api_url}/user/register`,
           data
         )
-        console.log('response', response) */
+        console.log('response', response)
+        if (response.status === 200) {
+          setApiResponseMessage({
+            text: 'Compte bien créé',
+            statusIsSuccess: true
+          })
+        } else {
+          setApiResponseMessage({
+            text: "Erreur, le compte n'a pas été créé",
+            statusIsSuccess: false
+          })
+        }
       }
     }
   }
 
-  const otherFields: OtherFields[] = [
+  const otherFields: OtherFieldsType[] = [
     {
       type: 'text',
       name: 'firstname',
-      title: 'Votre prénom'
+      title: 'Votre prénom',
+      value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
+      message: 'Entered value does not match firstname format'
     },
     {
       type: 'text',
       name: 'lastname',
-      title: 'Votre nom'
+      title: 'Votre nom',
+      value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
+      message: 'Entered value does not match lastname format'
     },
     {
       type: 'tel',
       name: 'phone',
-      title: 'Votre numéro'
+      title: 'Votre numéro',
+      value:
+        /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/gm,
+      message: 'Entered value does not match phone number format'
     }
   ]
 
   //console.log('errors', errors)
 
-  const getErrorMessage = (name: string) => {
+  const generateErrorMessage = (name: string) => {
     switch (name) {
       case 'firstname':
         return errors.firstname?.message
@@ -100,6 +130,7 @@ export default function IndentifyPage(): JSX.Element {
         return undefined
     }
   }
+
   return (
     <>
       <h1 className='text-3xl'>Identifiez-vous</h1>
@@ -151,29 +182,93 @@ export default function IndentifyPage(): JSX.Element {
         )}
         {userExist === false && (
           <>
-            {otherFields.map(({ type, name, title }: any) => (
+            {otherFields.map(({ type, name, title, value, message }: any) => (
               <Input
                 key={name}
                 type={type}
                 name={name}
                 title={title}
                 register={{
-                  ...register(name, { required: true })
+                  ...register(name, {
+                    required: true,
+                    pattern: {
+                      value,
+                      message
+                    }
+                  })
                 }}
-                errorMessage={getErrorMessage(name)}
+                errorMessage={generateErrorMessage(name)}
               />
             ))}
+            {/* <Input
+              type='text'
+              name='firstame'
+              title='Votre prénom'
+              register={{
+                ...register('firstname', {
+                  required: true,
+                  pattern: {
+                    value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
+                    message: 'Entered value does not match firstname format'
+                  }
+                })
+              }}
+              errorMessage={errors.firstname?.message}
+            />
+            <Input
+              type='text'
+              name='lastname'
+              title='Votre nom'
+              register={{
+                ...register('lastname', {
+                  required: true,
+                  pattern: {
+                    value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
+                    message: 'Entered value does not match lastname format'
+                  }
+                })
+              }}
+              errorMessage={errors.lastname?.message}
+            />
+            <Input
+              type='text'
+              name='phone'
+              title='Votre telephone'
+              register={{
+                ...register('phone', {
+                  required: true,
+                  pattern: {
+                    value:
+                      /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/gm,
+                    message: 'Entered value does not match phone format'
+                  }
+                })
+              }}
+              errorMessage={errors.phone?.message}
+            /> */}
           </>
         )}
-        <button type='submit'>
+        <button
+          type='submit'
+          disabled={apiResponseMessage !== null && userExist === false}
+        >
           {userExist === null && 'Envoyer'}
           {userExist && 'Se connecter'}
           {userExist === false && 'Créer mon compte'}
         </button>
       </form>
-      <div>
-        <DevTool control={control} />
-      </div>
+      {apiResponseMessage && (
+        <p
+          className={
+            apiResponseMessage.statusIsSuccess
+              ? 'text-green-500'
+              : 'text-red-500'
+          }
+        >
+          {apiResponseMessage.text}
+        </p>
+      )}
+      <DevTool control={control} />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-//import UserContext from '../../../store/userContext'
+import { UserContext } from '../../../contexts/userContext/userContext'
 import { useRouter } from 'next/router'
 import AdList from '../../../components/adList/adList'
 import Link from 'next/link'
@@ -31,10 +31,13 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
   const hour = new Date().getHours()
   const router = useRouter()
   const userIdRoute = router.query.userId
-  //const userCtx = useContext(UserContext)
+  const userCtx = useContext(UserContext)
+  //console.log('userCtx PAGE USER', userCtx)
+  const userFirstname = userCtx.user?.firstname
+  const userId = userCtx.user?._id
   //const { userId, userFirstname } = userCtx
-  const userFirstname = 'John'
-  const userId = '62fc16903edbb27f94be99cf'
+  //const userFirstname = 'John'
+  //const userId = '62fc16903edbb27f94be99cf'
 
   const { data, isLoading, isError } = useQuery(
     ['userAds', userIdRoute],
@@ -53,7 +56,9 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
   const handleLogout = async () => {
     const response = await axios.post(`${config.api_url}/user/logout`)
     console.log('response.data.message', response.data.message)
-    //userCtx.disconnectUser()
+    localStorage.removeItem('userStorage')
+    userCtx.setUser(null)
+    router.push('/')
   }
 
   return (
@@ -75,7 +80,7 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
           </ul>
         </aside>
       )}
-      <h1>
+      <h1 className='mb-2'>
         {isLoading
           ? 'Chargement...'
           : userAds.length
