@@ -1,8 +1,14 @@
 import { createContext, useState, useEffect } from 'react'
-import { UserContextType, AuthUser, UserContextProviderProps } from './types'
+import {
+  UserContextType,
+  AuthUser,
+  UserContextProviderPropsType
+} from './types'
 
 export const UserContext = createContext({} as UserContextType)
-export const UserContextProvider = ({ children }: UserContextProviderProps) => {
+export const UserContextProvider = ({
+  children
+}: UserContextProviderPropsType) => {
   const [user, setUser] = useState<AuthUser | null>(null)
   useEffect(() => {
     if (user) localStorage.setItem('userStorage', JSON.stringify(user))
@@ -11,7 +17,10 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
       if (userStorage) {
         const { _id, firstname, token, imageUser } = JSON.parse(userStorage)
         setUser({ _id, firstname, token, imageUser })
-      } else localStorage.removeItem('userStorage')
+      } else {
+        setUser({ _id: '', firstname: '', token: '', imageUser: '' })
+        localStorage.removeItem('userStorage')
+      }
     }
   }, [user])
   return (

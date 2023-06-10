@@ -17,40 +17,38 @@ export default function Header(): JSX.Element {
   const userId = userCtx.user?._id
   //const fakeUserLogged = 'https://res.cloudinary.com/mika4ever/image/upload/v1661777175/my%20assets/apple/apple-governance-01.png'
   const imageUser = userCtx.user?.imageUser
-  console.log('imageUser', imageUser)
 
   //console.log('userCtx HEADER', userCtx)
   const darkMode = useContext(ThemeContext)
 
+  /* const token = localStorage.getItem('userStorage')
+  console.log('token', token) */
+
   return (
-    <header className='flex justify-between items-center px-8 bg-gray-700'>
+    <header className='flex justify-between items-center bg-gray-300 dark:bg-gray-700'>
       <Link href='/'>
         <a className='flex'>
           <Image src={logo} alt='logo' width={30} height={30} />
         </a>
       </Link>
 
-      {userCtx.user?.firstname && (
-        <p
-          style={{
-            backgroundColor: darkMode ? 'black' : 'white',
-            color: darkMode ? 'white' : 'black'
-          }}
-        >
-          {userCtx.user.firstname}
-        </p>
-      )}
-
-      {userIsLogged !== null &&
+      {userCtx.user !== null &&
         (userIsLogged ? (
           <Link href={`/user/${userId}`}>
-            <a className='flex'>
+            <a className='flex items-center underline'>
               <Image
                 src={imageUser ? imageUser : defaultProfile}
                 alt='image utilisateur'
                 width={30}
                 height={30}
               />
+              <p
+                className={
+                  darkMode ? 'bg-black text-white' : 'bg-white text-black'
+                }
+              >
+                {userCtx.user?.firstname}
+              </p>
             </a>
           </Link>
         ) : (

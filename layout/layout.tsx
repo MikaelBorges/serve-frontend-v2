@@ -1,4 +1,5 @@
 import Header from './header'
+import Nav from './nav'
 
 export default function Layout({
   children
@@ -9,6 +10,7 @@ export default function Layout({
     <>
       <Header />
       <main className='p-2'>{children}</main>
+      <Nav />
     </>
   )
 }

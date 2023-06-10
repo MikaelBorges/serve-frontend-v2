@@ -42,7 +42,7 @@ export default function IndentifyPage(): JSX.Element {
 
   const onSubmit: SubmitHandler<FormValuesType> = async (data) => {
     //const onSubmit = async (data: FormValuesType) => {
-    console.log('data', data)
+    //console.log('data', data)
 
     if (userExist === null) {
       const response = await axios.post(`${config.api_url}/user/identify`, data)
@@ -118,7 +118,7 @@ export default function IndentifyPage(): JSX.Element {
 
   //console.log('errors', errors)
 
-  const generateErrorMessage = (name: string) => {
+  const generateErrorMessageValue = (name: string) => {
     switch (name) {
       case 'firstname':
         return errors.firstname?.message
@@ -131,17 +131,21 @@ export default function IndentifyPage(): JSX.Element {
     }
   }
 
+  const handleChangeEmail = () => {
+    if (userExist !== null) setUserExist(null)
+  }
+
   return (
     <>
       <h1 className='text-3xl'>Identifiez-vous</h1>
       <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
         <Input
-          disabled={userExist !== null}
           type='text'
           name='email'
           title='Votre email'
           register={{
             ...register('email', {
+              onChange: () => handleChangeEmail(),
               required: true,
               minLength: {
                 value: 5,
@@ -197,7 +201,7 @@ export default function IndentifyPage(): JSX.Element {
                     }
                   })
                 }}
-                errorMessage={generateErrorMessage(name)}
+                errorMessage={generateErrorMessageValue(name)}
               />
             ))}
             {/* <Input

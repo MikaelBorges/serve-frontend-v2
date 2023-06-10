@@ -10,6 +10,6 @@ export type AuthUser = {
   imageUser: string
 }
 
-export type UserContextProviderProps = {
+export type UserContextProviderPropsType = {
   children: React.ReactNode
 }

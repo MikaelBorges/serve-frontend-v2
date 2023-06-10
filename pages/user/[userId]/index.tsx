@@ -83,6 +83,8 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
       <h1 className='mb-2'>
         {isLoading
           ? 'Chargement...'
+          : userCtx.user === null
+          ? ''
           : userAds.length
           ? userIdRoute === userId
             ? 'Voici vos annonces'

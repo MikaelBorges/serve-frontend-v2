@@ -6,7 +6,7 @@ export default function AdList({ ads }: AdListProps): JSX.Element {
   return (
     <ul className='flex flex-col'>
       {ads.map(({ title, _id, userId, imagesWork, imageUser }) => (
-        <li key={_id} className='flex bg-gray-700 mb-2'>
+        <li key={_id} className='flex bg-gray-300 dark:bg-gray-700 mb-2'>
           <Image src={imagesWork[0]} alt={title} width={150} height={150} />
           <div className='flex w-full'>
             <Link href={`/ad/${_id}`}>
