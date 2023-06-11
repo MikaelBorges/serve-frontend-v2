@@ -7,6 +7,7 @@ import { config } from '../../../utils/config'
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import type { GetServerSidePropsResult } from 'next'
+import Overlay from '../../../layout/overlay/overlay'
 
 export async function getServerSideProps({
   params
@@ -95,16 +96,13 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
       </h1>
       {Boolean(userAds.length) && <AdList ads={userAds} />}
       {isError && (
-        <div className='absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center'>
-          <p className='p-10 bg-slate-500'>
-            Erreur dans la récupération de l&apos;utilisateur
-            <Link href={'/'}>
-              <a className='underline block'>
-                cliquer ici pour revenir à l&apos;acceuil
-              </a>
-            </Link>
-          </p>
-        </div>
+        <Overlay
+          message="Erreur l'utilisateur n'existe plus"
+          link={{
+            text: "cliquez ici pour revenir à la page d'accueil",
+            url: '/'
+          }}
+        />
       )}
     </>
   )
