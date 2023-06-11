@@ -5,23 +5,25 @@ import { config } from '../../utils/config'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { DevTool } from '@hookform/devtools'
-import {
-  FormValuesType,
-  OtherFieldsType,
-  MessageCreateAccountType
-} from './types'
+import { FormValuesType, MessageCreateAccountType } from './types'
 import { UserContext } from '../../contexts/userContext/userContext'
 import { useQuery } from '@tanstack/react-query'
+import Image from 'next/image'
+import loader from '../../assets/images/loader/y3Hm3.gif'
+import { createUserAdditionalFields } from '../../data/fields/createUserAdditionalFields'
+import { seconds } from '../../utils/seconds'
+import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
+import Overlay from '../../layout/overlay/overlay'
 
 export default function IndentifyPage(): JSX.Element {
+  const overlayCtx = useContext(OverlayContext)
   const router = useRouter()
   const [userExist, setUserExist] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [apiResponseMessage, setApiResponseMessage] =
     useState<MessageCreateAccountType | null>(null)
+
   const userCtx = useContext(UserContext)
-  //console.log('userCtx LOGIN PAGE', userCtx)
-  //const { userIsLogged } = userCtx
-  //const userIsLogged = false
   const userIsLogged = userCtx.user?.token
   if (userIsLogged) router.push('/')
 
@@ -30,24 +32,46 @@ export default function IndentifyPage(): JSX.Element {
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm<FormValuesType>({
-    mode: 'onChange'
-  })
+  } = useForm<FormValuesType>()
 
   /* const {
+    control,
     handleSubmit,
     register,
     formState: { errors }
   } = useForm<FormValuesType>() */
 
+  //console.log('errors', errors)
+
+  const generateErrorMessageValue = (name: string) => {
+    switch (name) {
+      case 'firstname':
+        return errors.firstname?.message
+      case 'lastname':
+        return errors.lastname?.message
+      case 'phone':
+        return errors.phone?.message
+      default:
+        return undefined
+    }
+  }
+
+  const handleChangeEmail = () => {
+    if (userExist !== null) setUserExist(null)
+  }
+
+  //const onSubmit = async (data: FormValuesType) => {
   const onSubmit: SubmitHandler<FormValuesType> = async (data) => {
-    //const onSubmit = async (data: FormValuesType) => {
-    //console.log('data', data)
+    setApiResponseMessage(null)
+    setIsLoading(true)
+    console.log('data', data)
+    //await seconds(2)
 
     if (userExist === null) {
       const response = await axios.post(`${config.api_url}/user/identify`, data)
       const { emailExist } = response.data
       setUserExist(emailExist)
+      setIsLoading(false)
     } else {
       if (userExist) {
         /* const { data, isLoading, isError } = useQuery(
@@ -77,62 +101,20 @@ export default function IndentifyPage(): JSX.Element {
         )
         console.log('response', response)
         if (response.status === 200) {
-          setApiResponseMessage({
-            text: 'Compte bien créé',
+          /* setApiResponseMessage({
+            text: 'Votre compte a bien été créé',
             statusIsSuccess: true
-          })
+          }) */
+          overlayCtx.setOverlay(true)
         } else {
           setApiResponseMessage({
-            text: "Erreur, le compte n'a pas été créé",
+            text: "Erreur, votre compte n'a pas été créé",
             statusIsSuccess: false
           })
         }
       }
+      setIsLoading(false)
     }
-  }
-
-  const otherFields: OtherFieldsType[] = [
-    {
-      type: 'text',
-      name: 'firstname',
-      title: 'Votre prénom',
-      value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
-      message: 'Entered value does not match firstname format'
-    },
-    {
-      type: 'text',
-      name: 'lastname',
-      title: 'Votre nom',
-      value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm,
-      message: 'Entered value does not match lastname format'
-    },
-    {
-      type: 'tel',
-      name: 'phone',
-      title: 'Votre numéro',
-      value:
-        /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/gm,
-      message: 'Entered value does not match phone number format'
-    }
-  ]
-
-  //console.log('errors', errors)
-
-  const generateErrorMessageValue = (name: string) => {
-    switch (name) {
-      case 'firstname':
-        return errors.firstname?.message
-      case 'lastname':
-        return errors.lastname?.message
-      case 'phone':
-        return errors.phone?.message
-      default:
-        return undefined
-    }
-  }
-
-  const handleChangeEmail = () => {
-    if (userExist !== null) setUserExist(null)
   }
 
   return (
@@ -176,7 +158,7 @@ export default function IndentifyPage(): JSX.Element {
               ...register('password', {
                 required: true,
                 minLength: {
-                  value: 5,
+                  value: 1,
                   message: 'too small'
                 }
               })
@@ -186,24 +168,26 @@ export default function IndentifyPage(): JSX.Element {
         )}
         {userExist === false && (
           <>
-            {otherFields.map(({ type, name, title, value, message }: any) => (
-              <Input
-                key={name}
-                type={type}
-                name={name}
-                title={title}
-                register={{
-                  ...register(name, {
-                    required: true,
-                    pattern: {
-                      value,
-                      message
-                    }
-                  })
-                }}
-                errorMessage={generateErrorMessageValue(name)}
-              />
-            ))}
+            {createUserAdditionalFields.map(
+              ({ type, name, title, value, message }: any) => (
+                <Input
+                  key={name}
+                  type={type}
+                  name={name}
+                  title={title}
+                  register={{
+                    ...register(name, {
+                      required: true,
+                      pattern: {
+                        value,
+                        message
+                      }
+                    })
+                  }}
+                  errorMessage={generateErrorMessageValue(name)}
+                />
+              )
+            )}
             {/* <Input
               type='text'
               name='firstame'
@@ -253,12 +237,17 @@ export default function IndentifyPage(): JSX.Element {
           </>
         )}
         <button
+          className='flex items-center mx-auto'
           type='submit'
-          disabled={apiResponseMessage !== null && userExist === false}
+          disabled={isLoading}
         >
-          {userExist === null && 'Envoyer'}
-          {userExist && 'Se connecter'}
-          {userExist === false && 'Créer mon compte'}
+          {isLoading && "En cours d'envoi"}
+          {!isLoading && userExist === null && 'Envoyer'}
+          {!isLoading && userExist && 'Se connecter'}
+          {!isLoading && userExist === false && 'Créer mon compte'}
+          {isLoading && (
+            <Image src={loader} alt='loader' width={20} height={20} />
+          )}
         </button>
       </form>
       {apiResponseMessage && (
@@ -271,6 +260,18 @@ export default function IndentifyPage(): JSX.Element {
         >
           {apiResponseMessage.text}
         </p>
+      )}
+      {overlayCtx.overlay && (
+        <Overlay
+          message='Votre compte a bien été créé'
+          buttons={[
+            {
+              text: 'Se connecter',
+              colorButton: 'bg-green-500',
+              action: () => setUserExist(true)
+            }
+          ]}
+        />
       )}
       <DevTool control={control} />
     </>

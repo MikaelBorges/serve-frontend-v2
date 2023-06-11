@@ -2,7 +2,7 @@
 import UserContext from "../../../../contexts/userContext/userContext"
 import { useRouter } from "next/router" */
 
-export default function UserSettings(): JSX.Element {
+export default function EditAd(): JSX.Element {
   /* const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
@@ -10,5 +10,5 @@ export default function UserSettings(): JSX.Element {
 
   if (userIdRoute !== userId) router.push("/") */
 
-  return <h1>UserSettings</h1>
+  return <h1>EditAd</h1>
 }

@@ -6,14 +6,6 @@ export type FormValuesType = {
   phone?: string
 }
 
-export type OtherFieldsType = {
-  type: string
-  name: string
-  title: string
-  value: RegExp
-  message: string
-}
-
 export type MessageCreateAccountType = {
   text: string
   statusIsSuccess: boolean

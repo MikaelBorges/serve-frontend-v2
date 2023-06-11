@@ -4,5 +4,4 @@ export type InputProps = {
   type: string
   title: string
   errorMessage: string | undefined
-  disabled?: boolean
 }
