@@ -56,7 +56,13 @@ export default function AdPage({ adFetched }): JSX.Element {
       ))}
       <h1>{isLoading ? 'Chargement...' : ad.title}</h1>
       {isError && (
-        <Overlay message="Erreur dans la récupération de l'annonce de l'utilisateur" />
+        <Overlay
+          message="Erreur l'annonce de l'utilisateur vient d'être supprimée"
+          link={{
+            text: "cliquez ici pour revenir à la page d'accueil",
+            url: '/'
+          }}
+        />
       )}
     </>
   )

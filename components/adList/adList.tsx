@@ -31,7 +31,14 @@ export default function AdList({ ads }: AdListProps): JSX.Element {
               </div>
             )}
             <div className='flex bg-gray-300 dark:bg-gray-700 mb-2'>
-              <Image src={imagesWork[0]} alt={title} width={150} height={150} />
+              {Boolean(imagesWork.length) && (
+                <Image
+                  src={imagesWork[0]}
+                  alt={title}
+                  width={150}
+                  height={150}
+                />
+              )}
               <div className='flex w-full'>
                 <Link href={`/ad/${_id}`}>
                   <a className='h-full w-full'>{title}</a>
