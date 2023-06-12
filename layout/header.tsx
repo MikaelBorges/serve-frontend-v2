@@ -18,7 +18,6 @@ export default function Header(): JSX.Element {
   //const fakeUserLogged = 'https://res.cloudinary.com/mika4ever/image/upload/v1661777175/my%20assets/apple/apple-governance-01.png'
   const imageUser = userCtx.user?.imageUser
 
-  //console.log('userCtx HEADER', userCtx)
   const darkMode = useContext(ThemeContext)
 
   /* const token = localStorage.getItem('userStorage')

@@ -33,7 +33,6 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
   const router = useRouter()
   const userIdRoute = router.query.userId
   const userCtx = useContext(UserContext)
-  //console.log('userCtx PAGE USER', userCtx)
   const userFirstname = userCtx.user?.firstname
   const userId = userCtx.user?._id
   //const { userId, userFirstname } = userCtx
@@ -55,8 +54,7 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
   const { userAds } = data.data
 
   const handleLogout = async () => {
-    const response = await axios.post(`${config.api_url}/user/logout`)
-    console.log('response.data.message', response.data.message)
+    await axios.post(`${config.api_url}/user/logout`)
     localStorage.removeItem('userStorage')
     userCtx.setUser(null)
     router.push('/')
@@ -97,7 +95,10 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
       {Boolean(userAds.length) && <AdList ads={userAds} />}
       {isError && (
         <Overlay
-          message="Erreur l'utilisateur n'existe plus"
+          message={{
+            text: "Erreur l'utilisateur n'existe plus",
+            color: 'text-red-500'
+          }}
           link={{
             text: "cliquez ici pour revenir à la page d'accueil",
             url: '/'

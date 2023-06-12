@@ -1,30 +1,25 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import Input from '../../components/input/input'
-import { config } from '../../utils/config'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { DevTool } from '@hookform/devtools'
-import { UserContext } from '../../contexts/userContext/userContext'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import loader from '../../assets/images/loader/y3Hm3.gif'
 import { newAdFields } from '../../data/fields/newAdFields'
 import { seconds } from '../../utils/seconds'
-
-type NewAdFormType = {
-  title: string
-  description: string
-  location: string
-  price: string
-}
-
-type MessageCreateAdType = {
-  text: string
-  statusIsSuccess: boolean
-}
+import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
+import { UserContext } from '../../contexts/userContext/userContext'
+import Overlay from '../../layout/overlay/overlay'
+import axios from 'axios'
+import { config } from '../../utils/config'
+import AdForm from '../../components/adForm/adForm'
+import { NewAdFormType } from '../../components/adForm/types'
+import { MessageCreateAdType } from './types'
 
 export default function NewAdPage() {
+  const overlayCtx = useContext(OverlayContext)
+  const userCtx = useContext(UserContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [apiResponseMessage, setApiResponseMessage] =
@@ -62,17 +57,15 @@ export default function NewAdPage() {
   const onSubmit: SubmitHandler<NewAdFormType> = async (data) => {
     setApiResponseMessage(null)
     setIsLoading(true)
-    console.log('data', data)
     //await seconds(2)
 
-    const response = {
-      status: 200
-    }
+    const response = await axios.post(
+      `${config.api_url}/user/ad/${userCtx.user?._id}`,
+      data
+    )
+
     if (response.status === 200) {
-      setApiResponseMessage({
-        text: 'Votre annonce a bien créée',
-        statusIsSuccess: true
-      })
+      overlayCtx.setOverlay(true)
     } else {
       setApiResponseMessage({
         text: "Erreur, votre annonce n'a pas été créée",
@@ -85,7 +78,7 @@ export default function NewAdPage() {
   return (
     <>
       <h1 className='text-3xl'>Nouvelle annonce</h1>
-      <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
+      <AdForm handleSubmit={handleSubmit} onSubmit={onSubmit}>
         {newAdFields.map(({ type, name, title, value, message }: any) => (
           <Input
             key={name}
@@ -107,14 +100,18 @@ export default function NewAdPage() {
         <button
           className='flex items-center mx-auto'
           type='submit'
-          disabled={isLoading || apiResponseMessage?.statusIsSuccess}
+          disabled={
+            isLoading ||
+            apiResponseMessage?.statusIsSuccess ||
+            overlayCtx.overlay
+          }
         >
           {isLoading ? "En cours d'envoi" : 'Envoyer'}
           {isLoading && (
             <Image src={loader} alt='loader' width={20} height={20} />
           )}
         </button>
-      </form>
+      </AdForm>
       {apiResponseMessage && (
         <p
           className={
@@ -125,6 +122,18 @@ export default function NewAdPage() {
         >
           {apiResponseMessage.text}
         </p>
+      )}
+      {overlayCtx.overlay && (
+        <Overlay
+          message={{
+            text: 'Votre annonce a bien été créée',
+            color: 'text-green-500'
+          }}
+          link={{
+            text: 'cliquez ici pour voir vos annonces',
+            url: `/user/${userCtx.user?._id}`
+          }}
+        />
       )}
       <DevTool control={control} />
     </>

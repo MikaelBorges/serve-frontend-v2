@@ -6,6 +6,8 @@ import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import Overlay from '../../layout/overlay/overlay'
 import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
+import axios from 'axios'
+import { config } from '../../utils/config'
 
 export default function AdList({ ads }: AdListProps): JSX.Element {
   const overlayCtx = useContext(OverlayContext)
@@ -13,6 +15,16 @@ export default function AdList({ ads }: AdListProps): JSX.Element {
   const userContextId = userCtx.user?._id
   const router = useRouter()
   const userIdRoute = router.query.userId
+  const [dataForDeletion, setDataForDeletion] = useState({})
+
+  const handleClickDeleteAd = (adId) => {
+    setDataForDeletion({ userId: userContextId, adId })
+    overlayCtx.setOverlay(true)
+  }
+
+  const handleDeleteAd = async () => {
+    await axios.post(`${config.api_url}/deleteAd`, dataForDeletion)
+  }
 
   return (
     <>
@@ -23,7 +35,7 @@ export default function AdList({ ads }: AdListProps): JSX.Element {
               <div className='flex'>
                 <button
                   className='mr-2'
-                  onClick={() => overlayCtx.setOverlay(true)}
+                  onClick={() => handleClickDeleteAd(_id)}
                 >
                   suppr
                 </button>
@@ -55,12 +67,14 @@ export default function AdList({ ads }: AdListProps): JSX.Element {
       </ul>
       {overlayCtx.overlay && (
         <Overlay
-          message='Etes-vous sûr ?'
+          message={{
+            text: 'Etes-vous sûr ?'
+          }}
           buttons={[
             {
               text: 'oui',
               colorButton: 'bg-green-500',
-              action: () => console.log("supprimer l'annonce")
+              action: () => handleDeleteAd()
             },
             {
               text: 'non',

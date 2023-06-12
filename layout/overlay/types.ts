@@ -1,5 +1,8 @@
 export type OverlayProps = {
-  message: string
+  message: {
+    text: string
+    color?: string
+  }
   link?: {
     text: string
     url: string

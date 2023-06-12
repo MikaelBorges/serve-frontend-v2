@@ -14,11 +14,16 @@ export default function Overlay({ message, link, buttons }: OverlayProps) {
   return (
     <div className='absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-black/50 z-10'>
       <div className='p-10 bg-slate-500'>
-        <p>{message}</p>
+        <p className={message.color}>{message.text}</p>
 
         {link && (
           <Link href={link.url}>
-            <a className='underline'>{link.text}</a>
+            <a
+              onClick={() => overlayCtx.setOverlay(false)}
+              className='underline'
+            >
+              {link.text}
+            </a>
           </Link>
         )}
 

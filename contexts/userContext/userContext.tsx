@@ -22,6 +22,7 @@ export const UserContextProvider = ({
         localStorage.removeItem('userStorage')
       }
     }
+    if (user !== null) console.log('userContext', user)
   }, [user])
   return (
     <UserContext.Provider value={{ user, setUser }}>

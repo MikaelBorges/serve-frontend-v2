@@ -64,7 +64,6 @@ export default function IndentifyPage(): JSX.Element {
   const onSubmit: SubmitHandler<FormValuesType> = async (data) => {
     setApiResponseMessage(null)
     setIsLoading(true)
-    console.log('data', data)
     //await seconds(2)
 
     if (userExist === null) {
@@ -84,7 +83,6 @@ export default function IndentifyPage(): JSX.Element {
         console.log('isLoading', isLoading)
         console.log('isError', isError) */
         const response = await axios.post(`${config.api_url}/user/login`, data)
-        console.log('response', response)
         if (response.status !== 200) {
           setApiResponseMessage({
             text: 'Erreur de connexion',
@@ -99,12 +97,7 @@ export default function IndentifyPage(): JSX.Element {
           `${config.api_url}/user/register`,
           data
         )
-        console.log('response', response)
         if (response.status === 200) {
-          /* setApiResponseMessage({
-            text: 'Votre compte a bien été créé',
-            statusIsSuccess: true
-          }) */
           overlayCtx.setOverlay(true)
         } else {
           setApiResponseMessage({
@@ -239,7 +232,11 @@ export default function IndentifyPage(): JSX.Element {
         <button
           className='flex items-center mx-auto'
           type='submit'
-          disabled={isLoading}
+          disabled={
+            isLoading ||
+            apiResponseMessage?.statusIsSuccess ||
+            overlayCtx.overlay
+          }
         >
           {isLoading && "En cours d'envoi"}
           {!isLoading && userExist === null && 'Envoyer'}
@@ -263,7 +260,10 @@ export default function IndentifyPage(): JSX.Element {
       )}
       {overlayCtx.overlay && (
         <Overlay
-          message='Votre compte a bien été créé'
+          message={{
+            text: 'Votre compte a bien été créé',
+            color: 'text-green-500'
+          }}
           buttons={[
             {
               text: 'Se connecter',
