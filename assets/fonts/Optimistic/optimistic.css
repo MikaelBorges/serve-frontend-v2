@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'Optimistic_Display_W_Bd';
+  src: url('./optimistic/Optimistic_Display_W_Bd.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Display_W_Md';
+  src: url('./optimistic/Optimistic_Display_W_Md.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Display_W_SBd';
+  src: url('./optimistic/Optimistic_Display_W_SBd.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Text_W_Bd';
+  src: url('./optimistic/Optimistic_Text_W_Bd.woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Text_W_It';
+  src: url('./optimistic/Optimistic_Text_W_It.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Text_W_Md';
+  src: url('./optimistic/Optimistic_Text_W_Md.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Optimistic_Text_W_Rg';
+  src: url('./optimistic/Optimistic_Text_W_Rg.woff2') format('woff2');
+}

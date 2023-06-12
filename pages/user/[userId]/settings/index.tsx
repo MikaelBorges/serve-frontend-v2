@@ -1,14 +1,29 @@
-/* import { useContext } from "react"
-import UserContext from "../../../../contexts/userContext/userContext"
-import { useRouter } from "next/router" */
+import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
+import Link from 'next/link'
+import { Mail } from 'lucide-react'
 
 export default function UserSettings(): JSX.Element {
-  /* const router = useRouter()
-  const userIdRoute = router.query.userId
-  const userCtx = useContext(UserContext)
-  const { userId } = userCtx
+  return (
+    <>
+      <Link href='/' className={buttonVariants({ variant: 'outline' })}>
+        Click here
+      </Link>
 
-  if (userIdRoute !== userId) router.push("/") */
+      <Button asChild>
+        <Link href='/login'>Login</Link>
+      </Button>
+      <Button>Button</Button>
+      <Button variant='outline'>Button</Button>
+      <Button variant='secondary'>Secondary</Button>
+      <Button variant='destructive'>Destructive</Button>
+      <Button variant='outline'>Outline</Button>
+      <Button variant='ghost'>Ghost</Button>
+      <Button variant='link'>Link</Button>
 
-  return <h1>UserSettings</h1>
+      <Button>
+        <Mail className='mr-2 h-4 w-4' /> Login with Email
+      </Button>
+    </>
+  )
 }
