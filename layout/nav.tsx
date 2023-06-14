@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const navElements = [
   {
-    text: '+',
+    text: 'Ajouter une annonce',
     route: '/ad',
     backgroundColor: 'bg-green-500'
   } /* ,
@@ -27,13 +27,15 @@ export default function Nav() {
   return (
     <>
       {userIsLogged && (
-        <nav className='fixed bottom-0 w-full flex justify-center'>
+        <nav className='sticky bottom-0 z-30 p-3 w-full flex justify-center'>
           {navElements.length && (
             <ul className='flex justify-center w-fit p-2'>
               {navElements.map(({ text, route, backgroundColor }) => (
                 <li key={route} className='[&:not(:last-child)]:mr-2'>
                   <Link href={route}>
-                    <a className={`px-2 py-1 ${backgroundColor}`}>{text}</a>
+                    <a className='bg-blue-600 text-white hover:bg-blue-600/70 h-10 py-2 px-4 rounded-full text-lg'>
+                      {text}
+                    </a>
                   </Link>
                 </li>
               ))}

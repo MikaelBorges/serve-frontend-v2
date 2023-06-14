@@ -11,7 +11,7 @@ export default function Input({
     <label htmlFor={name} className='mb-4'>
       {title}
       <input
-        className='block'
+        className='block dark:bg-[#22272e]'
         id={name}
         type={type}
         name={name}

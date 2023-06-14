@@ -6,7 +6,7 @@ export type CardType = {
   imageUser: string
   location: string
   price: string
-  superUser: boolean
+  levelUser: string
   starsNb: number
   timeOfPublication: string
   title: string

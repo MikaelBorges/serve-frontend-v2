@@ -9,7 +9,7 @@ export default function Layout({
   return (
     <>
       <Header />
-      <main className='p-2'>{children}</main>
+      <main className='px-3 min-h-[calc(100vh-(2*66px))]'>{children}</main>
       <Nav />
     </>
   )

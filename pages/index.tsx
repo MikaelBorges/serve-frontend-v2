@@ -1,4 +1,4 @@
-import AdList from '../components/adList/adList'
+import CardList from '../components/cardList/cardList'
 import { config } from '../utils/config'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -72,7 +72,7 @@ export default function Home({ adsFetched }: AdsFetched): JSX.Element {
         </aside>
       )} */}
 
-      <h1 className='mb-2'>
+      <h1 className='mb-2 text-3xl'>
         {isError
           ? 'Erreur dans la récupération des annonces'
           : isLoading
@@ -82,7 +82,7 @@ export default function Home({ adsFetched }: AdsFetched): JSX.Element {
           : 'Aucune annonces'}
       </h1>
 
-      {Boolean(allAds.length) && <AdList ads={allAds} />}
+      {Boolean(allAds.length) && <CardList ads={allAds} />}
     </>
   )
 }

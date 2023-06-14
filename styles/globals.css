@@ -36,7 +36,7 @@
 
     --ring: 215 20.2% 65.1%;
 
-    --radius: 9999px;
+    --radius: 0.5rem;
 
     /* --font-optimistic: 'Optimistic_Text_W_Bd'; */
   }
@@ -71,7 +71,7 @@
 
     --ring: 216 34% 17%;
 
-    --radius: 9999px;
+    --radius: 0.5rem;
 
     /* --font-optimistic: 'Optimistic_Text_W_Bd'; */
   }
@@ -84,8 +84,25 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'rlig' 1, 'calt' 1;
+    /* height: 100vh; */
   }
   html {
     font-family: 'Gilroy-Medium', 'Arial';
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  /* html {
+    color-scheme: dark;
+  } */
+  body {
+    color: white;
+    background-color: #22272e;
+  }
+}
+
+/* @layer components {
+  #__next {
+    @apply h-screen;
+  }
+} */

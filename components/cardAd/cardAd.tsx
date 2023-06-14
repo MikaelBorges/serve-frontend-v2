@@ -1,0 +1,179 @@
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import { moneyIcon, starIcon, heartIcon } from '@/assets/icons/icons'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { useRouter } from 'next/router'
+import { UserContext } from '../../contexts/userContext/userContext'
+import { useContext, useState } from 'react'
+import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
+import Overlay from '../../layout/overlay/overlay'
+import { HiOutlineTrash } from 'react-icons/hi'
+import axios from 'axios'
+import { config } from '../../utils/config'
+
+export default function CardAd({
+  title,
+  _id,
+  userId,
+  imagesWork,
+  imageUser,
+  description,
+  price,
+  starsNb,
+  favoritesNb,
+  location,
+  levelUser
+}) {
+  const [dataForDeletion, setDataForDeletion] = useState({})
+  const userCtx = useContext(UserContext)
+  const userContextId = userCtx.user?._id
+  const router = useRouter()
+  const userIdRoute = router.query.userId
+  const overlayCtx = useContext(OverlayContext)
+
+  const handleClickDeleteAd = (adId) => {
+    setDataForDeletion({ userId: userContextId, adId })
+    overlayCtx.setOverlay(true)
+  }
+
+  const handleDeleteAd = async () => {
+    await axios.post(`${config.api_url}/deleteAd`, dataForDeletion)
+  }
+
+  const displayStars = (starsNb) => {
+    let stringOfStars = ''
+    while (starsNb) {
+      stringOfStars += starIcon
+      --starsNb
+    }
+    return stringOfStars
+  }
+
+  return (
+    <li
+      className={
+        userIdRoute === userContextId
+          ? 'p-2 border-slate-400 rounded-3xl border-dashed border-2 mb-6 last:mb-3'
+          : '[&:not(:last-child)]:mb-3'
+      }
+    >
+      {userIdRoute === userContextId && (
+        <div className='flex mb-2'>
+          <Button
+            className='[&:not(:last-child)]:mr-1'
+            variant='destructive'
+            size='forIcon'
+            onClick={() => handleClickDeleteAd(_id)}
+          >
+            <HiOutlineTrash />
+          </Button>
+          <Link href={`/ad/${_id}/edit`}>
+            <a className='inline-flex items-center justify-center bg-black text-white rounded-full h-7 py-1 px-3 [&:not(:last-child)]:mr-1'>
+              modifier
+            </a>
+          </Link>
+        </div>
+      )}
+      <Card className='rounded-3xl border-0 flex overflow-hidden'>
+        {Boolean(imagesWork.length) && (
+          <div className='min-w-[9rem] w-36'>
+            <Image src={imagesWork[0]} alt={title} width={144} height={144} />
+          </div>
+        )}
+        <div className='p-2 w-full flex flex-col'>
+          <div className='flex h-full flex-col'>
+            <div className='flex'>
+              <Link href={`/ad/${_id}`}>
+                <a className='w-full'>
+                  <CardHeader className='p-0'>
+                    <CardTitle>{title}</CardTitle>
+                    <CardContent className='p-0 flex justify-between'>
+                      <CardDescription className='text-xs'>
+                        {location}
+                      </CardDescription>
+                    </CardContent>
+                  </CardHeader>
+                </a>
+              </Link>
+              <Link href={`/user/${userId}`}>
+                <a className='flex flex-col items-center'>
+                  <Avatar>
+                    <AvatarImage src={imageUser} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  {levelUser && (
+                    <Badge
+                      variant={levelUser === 'Gold' ? 'gold' : 'ultra'}
+                      className='text-[0.5rem] py-[0.05rem] px-1 mt-1'
+                    >
+                      {levelUser}
+                    </Badge>
+                  )}
+                </a>
+              </Link>
+            </div>
+            <Link href={`/ad/${_id}`}>
+              <a className='h-full'>
+                <p className='dark:text-white leading-4'>{description}</p>
+              </a>
+            </Link>
+          </div>
+          <CardFooter className='flex p-0 items-end'>
+            <div className='min-w-fit'>
+              {starsNb && (
+                <Link href='#'>
+                  <a className='w-fit px-1 text-[0.5rem] rounded-full block dark:bg-[#454D56]'>
+                    {displayStars(starsNb)}
+                  </a>
+                </Link>
+              )}
+              <p className='text-xs dark:text-yellow-100 text-fuchsia-500'>
+                {moneyIcon} {price} €/h
+              </p>
+            </div>
+            <Link href={`/ad/${_id}`}>
+              <a className='w-full h-full'></a>
+            </Link>
+            <div className='min-w-fit flex flex-col h-full'>
+              <Link href={`/ad/${_id}`}>
+                <a className='w-full h-full'></a>
+              </Link>
+              <Button variant='buttonCard'>
+                {favoritesNb} {heartIcon}
+              </Button>
+            </div>
+          </CardFooter>
+        </div>
+      </Card>
+      {overlayCtx.overlay && (
+        <Overlay
+          message={{
+            text: 'Etes-vous sûr ?'
+          }}
+          buttons={[
+            {
+              text: 'oui',
+              colorButton: 'bg-green-500',
+              action: () => handleDeleteAd()
+            },
+            {
+              text: 'non',
+              colorButton: 'bg-red-500',
+              action: () => overlayCtx.setOverlay(false)
+            }
+          ]}
+        />
+      )}
+    </li>
+  )
+}
