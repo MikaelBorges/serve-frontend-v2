@@ -27,6 +27,7 @@ export default function Header(): JSX.Element {
   const userId = userCtx.user?._id
   //const fakeUserLogged = 'https://res.cloudinary.com/mika4ever/image/upload/v1661777175/my%20assets/apple/apple-governance-01.png'
   const imageUser = userCtx.user?.imageUser
+  const initials = userCtx.user?.initials
 
   /* const token = localStorage.getItem('userStorage')
   console.log('token', token) */
@@ -46,7 +47,7 @@ export default function Header(): JSX.Element {
               <a className='ml-2 rounded-full'>
                 <Avatar>
                   <AvatarImage src={imageUser} />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </a>
             </Link>

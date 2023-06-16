@@ -15,10 +15,17 @@ export const UserContextProvider = ({
     else {
       const userStorage = localStorage.getItem('userStorage')
       if (userStorage) {
-        const { _id, firstname, token, imageUser } = JSON.parse(userStorage)
-        setUser({ _id, firstname, token, imageUser })
+        const { _id, firstname, token, imageUser, initials } =
+          JSON.parse(userStorage)
+        setUser({ _id, firstname, token, imageUser, initials })
       } else {
-        setUser({ _id: '', firstname: '', token: '', imageUser: '' })
+        setUser({
+          _id: '',
+          firstname: '',
+          token: '',
+          imageUser: '',
+          initials: ''
+        })
         localStorage.removeItem('userStorage')
       }
     }

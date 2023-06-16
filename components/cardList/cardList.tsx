@@ -17,7 +17,8 @@ export default function CardList({ ads }: AdListProps): JSX.Element {
             starsNb,
             favoritesNb,
             location,
-            levelUser
+            levelUser,
+            initials
           }) => (
             <CardAd
               key={_id}
@@ -32,6 +33,7 @@ export default function CardList({ ads }: AdListProps): JSX.Element {
               userId={userId}
               imagesWork={imagesWork}
               imageUser={imageUser}
+              initials={initials}
             />
           )
         )}

@@ -54,7 +54,10 @@ export default function IndentifyPage(): JSX.Element {
   }
 
   const handleChangeEmail = () => {
-    if (userExist !== null) setUserExist(null)
+    if (userExist !== null) {
+      setUserExist(null)
+      setApiResponseMessage(null)
+    }
   }
 
   //const onSubmit = async (data: FormValuesType) => {
@@ -87,8 +90,9 @@ export default function IndentifyPage(): JSX.Element {
           })
         }
         const { token } = response.data
-        const { _id, firstname, imageUser } = response.data.session.user
-        userCtx.setUser({ _id, firstname, token, imageUser })
+        const { _id, firstname, imageUser, initials } =
+          response.data.session.user
+        userCtx.setUser({ _id, firstname, token, imageUser, initials })
       } else {
         const response = await axios.post(
           `${config.api_url}/user/register`,
@@ -151,7 +155,7 @@ export default function IndentifyPage(): JSX.Element {
               ...register('password', {
                 required: true,
                 minLength: {
-                  value: 1,
+                  value: 3,
                   message: 'too small'
                 }
               })

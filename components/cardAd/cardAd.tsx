@@ -42,7 +42,8 @@ export default function CardAd({
   starsNb,
   favoritesNb,
   location,
-  levelUser
+  levelUser,
+  initials
 }) {
   const [dataForDeletion, setDataForDeletion] = useState({})
   const userCtx = useContext(UserContext)
@@ -140,7 +141,7 @@ export default function CardAd({
                 <a className='flex flex-col items-center'>
                   <Avatar>
                     <AvatarImage src={imageUser} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   {levelUser && (
                     <Badge

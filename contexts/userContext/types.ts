@@ -8,6 +8,7 @@ export type AuthUser = {
   token: string
   firstname: string
   imageUser: string
+  initials: string
 }
 
 export type UserContextProviderPropsType = {
