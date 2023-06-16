@@ -72,7 +72,7 @@ export default function Home({ adsFetched }: AdsFetched): JSX.Element {
         </aside>
       )} */}
 
-      <h1 className='mb-2 text-3xl'>
+      <h1 className='text-3xl'>
         {isError
           ? 'Erreur dans la récupération des annonces'
           : isLoading

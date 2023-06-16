@@ -15,11 +15,21 @@ import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/router'
 import { UserContext } from '../../contexts/userContext/userContext'
 import { useContext, useState } from 'react'
-import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
-import Overlay from '../../layout/overlay/overlay'
 import { HiOutlineTrash } from 'react-icons/hi'
 import axios from 'axios'
 import { config } from '../../utils/config'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
+import { buttonVariants } from '@/components/ui/button'
 
 export default function CardAd({
   title,
@@ -39,11 +49,9 @@ export default function CardAd({
   const userContextId = userCtx.user?._id
   const router = useRouter()
   const userIdRoute = router.query.userId
-  const overlayCtx = useContext(OverlayContext)
 
   const handleClickDeleteAd = (adId) => {
     setDataForDeletion({ userId: userContextId, adId })
-    overlayCtx.setOverlay(true)
   }
 
   const handleDeleteAd = async () => {
@@ -64,21 +72,44 @@ export default function CardAd({
       className={
         userIdRoute === userContextId
           ? 'p-2 border-slate-400 rounded-3xl border-dashed border-2 mb-6 last:mb-3'
-          : '[&:not(:last-child)]:mb-3'
+          : '[&:not(:last-child)]:mb-6'
       }
     >
       {userIdRoute === userContextId && (
         <div className='flex mb-2'>
-          <Button
-            className='[&:not(:last-child)]:mr-1'
-            variant='destructive'
-            size='forIcon'
-            onClick={() => handleClickDeleteAd(_id)}
-          >
-            <HiOutlineTrash />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              onClick={() => handleClickDeleteAd(_id)}
+              className='bg-red-500 text-white rounded-full px-1.5 mr-2'
+            >
+              <HiOutlineTrash />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Etes-vous sûr(e) ?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Attention, cette action n&apos;est pas réversible. Cela
+                  supprimera définitivement votre annonce et supprimera ses
+                  données de nos serveurs.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  className={buttonVariants({ variant: 'default' })}
+                >
+                  Annuler
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className={buttonVariants({ variant: 'destructive' })}
+                  onClick={() => handleDeleteAd()}
+                >
+                  Supprimer
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Link href={`/ad/${_id}/edit`}>
-            <a className='inline-flex items-center justify-center bg-black text-white rounded-full h-7 py-1 px-3 [&:not(:last-child)]:mr-1'>
+            <a className='inline-flex items-center justify-center bg-black text-white dark:bg-slate-200 dark:text-black rounded-full h-7 py-1 px-3 [&:not(:last-child)]:mr-1'>
               modifier
             </a>
           </Link>
@@ -96,7 +127,7 @@ export default function CardAd({
               <Link href={`/ad/${_id}`}>
                 <a className='w-full'>
                   <CardHeader className='p-0'>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle className='font-normal'>{title}</CardTitle>
                     <CardContent className='p-0 flex justify-between'>
                       <CardDescription className='text-xs'>
                         {location}
@@ -114,7 +145,7 @@ export default function CardAd({
                   {levelUser && (
                     <Badge
                       variant={levelUser === 'Gold' ? 'gold' : 'ultra'}
-                      className='text-[0.5rem] py-[0.05rem] px-1 mt-1'
+                      className='text-[0.5rem] py-[0.05rem] px-1 mt-1 font-normal'
                     >
                       {levelUser}
                     </Badge>
@@ -128,52 +159,26 @@ export default function CardAd({
               </a>
             </Link>
           </div>
-          <CardFooter className='flex p-0 items-end'>
-            <div className='min-w-fit'>
-              {starsNb && (
-                <Link href='#'>
-                  <a className='w-fit px-1 text-[0.5rem] rounded-full block dark:bg-[#454D56]'>
-                    {displayStars(starsNb)}
-                  </a>
-                </Link>
-              )}
-              <p className='text-xs dark:text-yellow-100 text-fuchsia-500'>
-                {moneyIcon} {price} €/h
-              </p>
-            </div>
-            <Link href={`/ad/${_id}`}>
-              <a className='w-full h-full'></a>
+          <CardFooter className='flex p-0'>
+            <Link href={`ad/${_id}`}>
+              <a className='w-full'>
+                {starsNb && (
+                  <p className='text-[0.5rem]'>{displayStars(starsNb)}</p>
+                )}
+                <p className='text-xs dark:text-yellow-100 text-fuchsia-500'>
+                  {moneyIcon} {price} €/h
+                </p>
+              </a>
             </Link>
-            <div className='min-w-fit flex flex-col h-full'>
-              <Link href={`/ad/${_id}`}>
-                <a className='w-full h-full'></a>
-              </Link>
-              <Button variant='buttonCard'>
-                {favoritesNb} {heartIcon}
-              </Button>
-            </div>
+            <Button
+              className='min-w-fit hover:bg-[#545d68]'
+              variant='buttonCard'
+            >
+              {favoritesNb} {heartIcon}
+            </Button>
           </CardFooter>
         </div>
       </Card>
-      {overlayCtx.overlay && (
-        <Overlay
-          message={{
-            text: 'Etes-vous sûr ?'
-          }}
-          buttons={[
-            {
-              text: 'oui',
-              colorButton: 'bg-green-500',
-              action: () => handleDeleteAd()
-            },
-            {
-              text: 'non',
-              colorButton: 'bg-red-500',
-              action: () => overlayCtx.setOverlay(false)
-            }
-          ]}
-        />
-      )}
     </li>
   )
 }

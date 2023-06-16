@@ -3,9 +3,9 @@ import { config } from '../../../utils/config'
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import type { GetServerSidePropsResult } from 'next'
-import Overlay from '../../../layout/overlay/overlay'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 export async function getServerSideProps({
   params
@@ -45,27 +45,27 @@ export default function AdPage({ adFetched }): JSX.Element {
 
   return (
     <>
-      {ad.imagesWork?.map((imageWork, index) => (
-        <Image
-          key={index}
-          src={imageWork}
-          alt={ad.title}
-          width={400}
-          height={400}
-        />
-      ))}
-      <h1>{isLoading ? 'Chargement...' : ad.title}</h1>
-      {isError && (
-        <Overlay
-          message={{
-            text: "Erreur l'annonce de l'utilisateur vient d'être supprimée",
-            color: 'text-red-500'
-          }}
-          link={{
-            text: "cliquez ici pour revenir à la page d'accueil",
-            url: '/'
-          }}
-        />
+      {isError ? (
+        <Alert variant='destructive'>
+          <AlertCircle className='h-4 w-4' />
+          <AlertTitle>Erreur</AlertTitle>
+          <AlertDescription>
+            L&apos;annonce de l&apos;utilisateur vient d&apos;être supprimée
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <>
+          <h1>{isLoading ? 'Chargement...' : ad.title}</h1>
+          {ad.imagesWork?.map((imageWork, index) => (
+            <Image
+              key={index}
+              src={imageWork}
+              alt={ad.title}
+              width={400}
+              height={400}
+            />
+          ))}
+        </>
       )}
     </>
   )

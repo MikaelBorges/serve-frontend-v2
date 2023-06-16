@@ -12,11 +12,8 @@ import Image from 'next/image'
 import loader from '../../assets/images/loader/y3Hm3.gif'
 import { createUserAdditionalFields } from '../../data/fields/createUserAdditionalFields'
 import { seconds } from '../../utils/seconds'
-import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
-import Overlay from '../../layout/overlay/overlay'
 
 export default function IndentifyPage(): JSX.Element {
-  const overlayCtx = useContext(OverlayContext)
   const router = useRouter()
   const [userExist, setUserExist] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -98,7 +95,10 @@ export default function IndentifyPage(): JSX.Element {
           data
         )
         if (response.status === 200) {
-          overlayCtx.setOverlay(true)
+          setApiResponseMessage({
+            text: 'Votre compte a bien été créé',
+            statusIsSuccess: true
+          })
         } else {
           setApiResponseMessage({
             text: "Erreur, votre compte n'a pas été créé",
@@ -232,11 +232,7 @@ export default function IndentifyPage(): JSX.Element {
         <button
           className='flex items-center mx-auto'
           type='submit'
-          disabled={
-            isLoading ||
-            apiResponseMessage?.statusIsSuccess ||
-            overlayCtx.overlay
-          }
+          disabled={isLoading || apiResponseMessage?.statusIsSuccess}
         >
           {isLoading && "En cours d'envoi"}
           {!isLoading && userExist === null && 'Envoyer'}
@@ -257,21 +253,6 @@ export default function IndentifyPage(): JSX.Element {
         >
           {apiResponseMessage.text}
         </p>
-      )}
-      {overlayCtx.overlay && (
-        <Overlay
-          message={{
-            text: 'Votre compte a bien été créé',
-            color: 'text-green-500'
-          }}
-          buttons={[
-            {
-              text: 'Se connecter',
-              colorButton: 'bg-green-500',
-              action: () => setUserExist(true)
-            }
-          ]}
-        />
       )}
       <DevTool control={control} />
     </>

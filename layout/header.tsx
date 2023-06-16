@@ -5,7 +5,7 @@ import { UserContext } from '../contexts/userContext/userContext'
 import logo from '../assets/images/logos/logo.png'
 import defaultProfile from '../assets/images/defaultProfile/default-m-818bf2b20d4b06a052dd..svg'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { CreditCard, Settings, User } from 'lucide-react'
+import { Laptop, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { buttonVariants } from '@/components/ui/button'
 
 export default function Header(): JSX.Element {
   const userCtx = useContext(UserContext)
@@ -38,32 +39,7 @@ export default function Header(): JSX.Element {
         </a>
       </Link>
 
-      {/* <Sun />
-      <Moon />
-      <Laptop /> */}
-
       <div className='flex items-center'>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline'>Theme</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className='min-w-fit'>
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className='mr-2 h-4 w-4' />
-                <span>Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className='mr-2 h-4 w-4' />
-                <span>Billing</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className='mr-2 h-4 w-4' />
-                <span>Settings</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
         {userCtx.user !== null &&
           (userIsLogged ? (
             <Link href={`/user/${userId}`}>
@@ -76,7 +52,7 @@ export default function Header(): JSX.Element {
             </Link>
           ) : (
             <Link href='/user'>
-              <a className='ml-2 inline-flex items-center justify-center bg-black text-white h-10 py-2 px-4 rounded-full text-lg'>
+              <a className='ml-2 inline-flex items-center justify-center bg-blue-600 text-white hover:bg-blue-600/70 h-10 py-2 px-4 rounded-full text-lg'>
                 s&apos;identifier
               </a>
             </Link>

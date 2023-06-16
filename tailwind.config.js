@@ -1,10 +1,12 @@
+const { fontFamily } = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  //darkMode: 'class',
+  //darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './layout/**/*.{ts,tsx}'
+    'pages/**/*.{ts,tsx}',
+    'components/**/*.{ts,tsx}',
+    'layout/**/*.{ts,tsx}'
   ],
   theme: {
     container: {
@@ -54,10 +56,10 @@ module.exports = {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: 'calc(var(--radius) - 4px)'
-      } /* 
+      },
       fontFamily: {
-        optimistic: ['var(--font-optimistic)']
-      }, */,
+        sans: ['var(--font-sans)', ...fontFamily.sans]
+      },
       keyframes: {
         'accordion-down': {
           from: { height: 0 },
@@ -73,9 +75,6 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out'
       }
     }
-    /* fontFamily: {
-      sans: ['var(--font-optimistic)']
-    } */
   },
   plugins: [require('tailwindcss-animate')]
 }

@@ -8,9 +8,7 @@ import Image from 'next/image'
 import loader from '../../assets/images/loader/y3Hm3.gif'
 import { newAdFields } from '../../data/fields/newAdFields'
 import { seconds } from '../../utils/seconds'
-import { OverlayContext } from '../../contexts/overlayContext/overlayContext'
 import { UserContext } from '../../contexts/userContext/userContext'
-import Overlay from '../../layout/overlay/overlay'
 import axios from 'axios'
 import { config } from '../../utils/config'
 import AdForm from '../../components/adForm/adForm'
@@ -18,7 +16,6 @@ import { NewAdFormType } from '../../components/adForm/types'
 import { MessageCreateAdType } from './types'
 
 export default function NewAdPage() {
-  const overlayCtx = useContext(OverlayContext)
   const userCtx = useContext(UserContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -65,7 +62,10 @@ export default function NewAdPage() {
     )
 
     if (response.status === 200) {
-      overlayCtx.setOverlay(true)
+      setApiResponseMessage({
+        text: 'Votre annonce a bien été créée',
+        statusIsSuccess: true
+      })
     } else {
       setApiResponseMessage({
         text: "Erreur, votre annonce n'a pas été créée",
@@ -100,11 +100,7 @@ export default function NewAdPage() {
         <button
           className='flex items-center mx-auto'
           type='submit'
-          disabled={
-            isLoading ||
-            apiResponseMessage?.statusIsSuccess ||
-            overlayCtx.overlay
-          }
+          disabled={isLoading || apiResponseMessage?.statusIsSuccess}
         >
           {isLoading ? "En cours d'envoi" : 'Envoyer'}
           {isLoading && (
@@ -122,18 +118,6 @@ export default function NewAdPage() {
         >
           {apiResponseMessage.text}
         </p>
-      )}
-      {overlayCtx.overlay && (
-        <Overlay
-          message={{
-            text: 'Votre annonce a bien été créée',
-            color: 'text-green-500'
-          }}
-          link={{
-            text: 'cliquez ici pour voir vos annonces',
-            url: `/user/${userCtx.user?._id}`
-          }}
-        />
       )}
       <DevTool control={control} />
     </>

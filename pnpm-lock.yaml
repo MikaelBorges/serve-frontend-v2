@@ -4,104 +4,105 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  '@next/font':
+    specifier: ^13.4.5
+    version: 13.4.5
+  '@radix-ui/react-alert-dialog':
+    specifier: ^1.0.4
+    version: 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-avatar':
+    specifier: ^1.0.3
+    version: 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-dropdown-menu':
+    specifier: ^2.0.5
+    version: 2.0.5(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-slot':
+    specifier: ^1.0.2
+    version: 1.0.2(@types/react@18.2.7)(react@18.2.0)
+  '@tanstack/react-query':
+    specifier: ^4.29.12
+    version: 4.29.12(react-dom@18.2.0)(react@18.2.0)
+  '@tanstack/react-query-devtools':
+    specifier: ^4.29.12
+    version: 4.29.12(@tanstack/react-query@4.29.12)(react-dom@18.2.0)(react@18.2.0)
+  axios:
+    specifier: ^1.4.0
+    version: 1.4.0
+  class-variance-authority:
+    specifier: ^0.6.0
+    version: 0.6.0(typescript@5.0.4)
+  clsx:
+    specifier: ^1.2.1
+    version: 1.2.1
+  lucide-react:
+    specifier: ^0.241.0
+    version: 0.241.0(react@18.2.0)
+  next:
+    specifier: 12.3.0
+    version: 12.3.0(react-dom@18.2.0)(react@18.2.0)
+  react:
+    specifier: 18.2.0
+    version: 18.2.0
+  react-dom:
+    specifier: 18.2.0
+    version: 18.2.0(react@18.2.0)
+  react-dropzone:
+    specifier: ^14.2.3
+    version: 14.2.3(react@18.2.0)
+  react-hook-form:
+    specifier: ^7.44.3
+    version: 7.44.3(react@18.2.0)
+  react-icons:
+    specifier: ^4.9.0
+    version: 4.9.0(react@18.2.0)
+  tailwind-merge:
+    specifier: ^1.13.1
+    version: 1.13.1
+  tailwindcss-animate:
+    specifier: ^1.0.5
+    version: 1.0.5(tailwindcss@3.3.2)
 
-  .:
-    dependencies:
-      '@next/font':
-        specifier: ^13.4.5
-        version: 13.4.5
-      '@radix-ui/react-avatar':
-        specifier: ^1.0.3
-        version: 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
-      '@radix-ui/react-dropdown-menu':
-        specifier: ^2.0.5
-        version: 2.0.5(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
-      '@radix-ui/react-slot':
-        specifier: ^1.0.2
-        version: 1.0.2(@types/react@18.2.7)(react@18.2.0)
-      '@tanstack/react-query':
-        specifier: ^4.29.12
-        version: 4.29.12(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-query-devtools':
-        specifier: ^4.29.12
-        version: 4.29.12(@tanstack/react-query@4.29.12)(react-dom@18.2.0)(react@18.2.0)
-      axios:
-        specifier: ^1.4.0
-        version: 1.4.0
-      class-variance-authority:
-        specifier: ^0.6.0
-        version: 0.6.0(typescript@5.0.4)
-      clsx:
-        specifier: ^1.2.1
-        version: 1.2.1
-      lucide-react:
-        specifier: ^0.241.0
-        version: 0.241.0(react@18.2.0)
-      next:
-        specifier: 12.3.0
-        version: 12.3.0(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
-      react-dropzone:
-        specifier: ^14.2.3
-        version: 14.2.3(react@18.2.0)
-      react-hook-form:
-        specifier: ^7.44.3
-        version: 7.44.3(react@18.2.0)
-      react-icons:
-        specifier: ^4.9.0
-        version: 4.9.0(react@18.2.0)
-      tailwind-merge:
-        specifier: ^1.13.1
-        version: 1.13.1
-      tailwindcss-animate:
-        specifier: ^1.0.5
-        version: 1.0.5(tailwindcss@3.3.2)
-    devDependencies:
-      '@hookform/devtools':
-        specifier: ^4.3.1
-        version: 4.3.1(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/eslint-plugin-query':
-        specifier: ^4.29.9
-        version: 4.29.9
-      '@types/node':
-        specifier: 20.2.5
-        version: 20.2.5
-      '@types/react':
-        specifier: 18.2.7
-        version: 18.2.7
-      '@types/react-dom':
-        specifier: ^18.2.4
-        version: 18.2.4
-      autoprefixer:
-        specifier: ^10.4.14
-        version: 10.4.14(postcss@8.4.24)
-      eslint:
-        specifier: ^8.41.0
-        version: 8.41.0
-      eslint-config-next:
-        specifier: 13.4.4
-        version: 13.4.4(eslint@8.41.0)(typescript@5.0.4)
-      eslint-config-prettier:
-        specifier: ^8.8.0
-        version: 8.8.0(eslint@8.41.0)
-      postcss:
-        specifier: ^8.4.24
-        version: 8.4.24
-      prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
-      tailwindcss:
-        specifier: ^3.3.2
-        version: 3.3.2
-      typescript:
-        specifier: ^5.0.4
-        version: 5.0.4
+devDependencies:
+  '@hookform/devtools':
+    specifier: ^4.3.1
+    version: 4.3.1(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+  '@tanstack/eslint-plugin-query':
+    specifier: ^4.29.9
+    version: 4.29.9
+  '@types/node':
+    specifier: 20.2.5
+    version: 20.2.5
+  '@types/react':
+    specifier: 18.2.7
+    version: 18.2.7
+  '@types/react-dom':
+    specifier: ^18.2.4
+    version: 18.2.4
+  autoprefixer:
+    specifier: ^10.4.14
+    version: 10.4.14(postcss@8.4.24)
+  eslint:
+    specifier: ^8.41.0
+    version: 8.41.0
+  eslint-config-next:
+    specifier: 13.4.4
+    version: 13.4.4(eslint@8.41.0)(typescript@5.0.4)
+  eslint-config-prettier:
+    specifier: ^8.8.0
+    version: 8.8.0(eslint@8.41.0)
+  postcss:
+    specifier: ^8.4.24
+    version: 8.4.24
+  prettier:
+    specifier: ^2.8.8
+    version: 2.8.8
+  tailwindcss:
+    specifier: ^3.3.2
+    version: 3.3.2
+  typescript:
+    specifier: ^5.0.4
+    version: 5.0.4
 
 packages:
 
@@ -566,6 +567,32 @@ packages:
       '@babel/runtime': 7.22.3
     dev: false
 
+  /@radix-ui/react-alert-dialog@1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-jbfBCRlKYlhbitueOAv7z74PXYeIQmWpKwm3jllsdkw7fGWNkxqP3v0nY9WmOzcPqpQuoorNtvViBgL46n5gVg==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.22.3
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-dialog': 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.7)(react@18.2.0)
+      '@types/react': 18.2.7
+      '@types/react-dom': 18.2.4
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@radix-ui/react-arrow@1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-wSP+pHsB/jQRaL6voubsQ/ZlrGBHHrOjmBnr19hxYgtS0WvAFwZhK2WP/YY5yF9uKECCEEDGxuLxq1NBK51wFA==}
     peerDependencies:
@@ -661,6 +688,40 @@ packages:
       '@babel/runtime': 7.22.3
       '@types/react': 18.2.7
       react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-dialog@1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-hJtRy/jPULGQZceSAP2Re6/4NpKo8im6V8P2hUqZsdFiSL8l35kYsw3qbRI6Ay5mQd2+wlLqje770eq+RJ3yZg==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.22.3
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-dismissable-layer': 1.0.4(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-focus-guards': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-focus-scope': 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-id': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-portal': 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-presence': 1.0.1(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.7)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.7)(react@18.2.0)
+      '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.7)(react@18.2.0)
+      '@types/react': 18.2.7
+      '@types/react-dom': 18.2.4
+      aria-hidden: 1.2.3
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-remove-scroll: 2.5.5(@types/react@18.2.7)(react@18.2.0)
     dev: false
 
   /@radix-ui/react-direction@1.0.1(@types/react@18.2.7)(react@18.2.0):
