@@ -170,10 +170,7 @@ export default function CardAd({
                 </p>
               </a>
             </Link>
-            <Button
-              className='min-w-fit hover:bg-[#545d68]'
-              variant='buttonCard'
-            >
+            <Button className='min-w-fit' variant='buttonCard'>
               {favoritesNb} {heartIcon}
             </Button>
           </CardFooter>

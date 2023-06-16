@@ -82,7 +82,7 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
                 {hour > 6 && hour < 20 ? lightIcon : telescopeIcon}
               </h2>
               <Link href={`/user/${userId}/settings`}>
-                <a className='mb-6 inline-flex items-center justify-center bg-black text-white dark:bg-slate-200 dark:text-black h-10 py-2 px-4 rounded-full text-lg dark:hover:bg-slate-300'>
+                <a className='mb-6 inline-flex items-center justify-center bg-black text-white dark:bg-slate-200 dark:text-black h-10 py-2 px-4 rounded-full text-lg'>
                   Modifier mon compte
                 </a>
               </Link>

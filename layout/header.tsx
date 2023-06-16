@@ -52,7 +52,7 @@ export default function Header(): JSX.Element {
             </Link>
           ) : (
             <Link href='/user'>
-              <a className='ml-2 inline-flex items-center justify-center bg-blue-600 text-white hover:bg-blue-600/70 h-10 py-2 px-4 rounded-full text-lg'>
+              <a className='ml-2 inline-flex items-center justify-center bg-blue-600 text-white h-10 py-2 px-4 rounded-full text-lg'>
                 s&apos;identifier
               </a>
             </Link>
