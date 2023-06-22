@@ -1,5 +1,5 @@
-@import '../assets/fonts/Gilroy/gilroy.css';
-@import '../assets/fonts/Optimistic/optimistic.css';
+@import "../assets/fonts/Gilroy/gilroy.css";
+@import "../assets/fonts/Optimistic/optimistic.css";
 
 @tailwind base;
 @tailwind components;
@@ -40,39 +40,6 @@
 
     --font-sans: Gilroy-Medium;
   }
-
-  /* .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
-
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
-
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 216 34% 17%;
-
-    --radius: 0.5rem;
-  } */
 }
 
 @layer base {
@@ -81,18 +48,11 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  /* html {
-    color-scheme: dark;
-  } */
-  /* body {
-    color: white;
-    background-color: #22272e;
-  } */
   :root {
     --background: 215, 15%, 16%;
     --foreground: 213 31% 91%;
@@ -126,9 +86,3 @@
     --radius: 0.5rem;
   }
 }
-
-/* @layer components {
-  #__next {
-    @apply h-screen;
-  }
-} */
