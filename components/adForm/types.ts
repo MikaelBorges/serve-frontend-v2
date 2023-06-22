@@ -1,4 +1,4 @@
-export type NewAdFormType = {
+export type AdFormType = {
   title: string
   description: string
   location: string

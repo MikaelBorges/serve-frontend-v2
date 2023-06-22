@@ -1,11 +1,7 @@
-import Header from './header'
-import Nav from './nav'
+import { Header } from './header'
+import { Nav } from './nav'
 
-export default function Layout({
-  children
-}: {
-  children: React.ReactNode
-}): JSX.Element {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />

@@ -1,8 +1,8 @@
-export type CardType = {
+export type AdsType = {
   dateOfPublication: string
   description: string
   favoritesNb: number
-  imagesWork: Array<string>
+  imagesWork: string[]
   imageUser: string
   location: string
   price: string
@@ -13,8 +13,9 @@ export type CardType = {
   userId: string
   views: number
   _id: string
+  initials: string
 }
 
 export type AdsFetched = {
-  adsFetched: CardType[]
+  adsFetched: AdsType[]
 }

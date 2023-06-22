@@ -1,22 +1,16 @@
 import { createContext, useState, useEffect } from 'react'
-import {
-  UserContextType,
-  AuthUser,
-  UserContextProviderPropsType
-} from './types'
+import { UserContextType, AuthUser, UserContextProviderPropsType } from './types'
 
 export const UserContext = createContext({} as UserContextType)
-export const UserContextProvider = ({
-  children
-}: UserContextProviderPropsType) => {
+
+export const UserContextProvider = ({ children }: UserContextProviderPropsType) => {
   const [user, setUser] = useState<AuthUser | null>(null)
   useEffect(() => {
     if (user) localStorage.setItem('userStorage', JSON.stringify(user))
     else {
       const userStorage = localStorage.getItem('userStorage')
       if (userStorage) {
-        const { _id, firstname, token, imageUser, initials } =
-          JSON.parse(userStorage)
+        const { _id, firstname, token, imageUser, initials } = JSON.parse(userStorage)
         setUser({ _id, firstname, token, imageUser, initials })
       } else {
         setUser({
@@ -31,9 +25,5 @@ export const UserContextProvider = ({
     }
     if (user !== null) console.log('userContext', user)
   }, [user])
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  )
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }

@@ -1,18 +1,35 @@
 import Image from 'next/image'
 import { config } from '../../../utils/config'
-import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import type { GetServerSidePropsResult } from 'next'
+import type { GetServerSideProps } from 'next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
+import { AdsType } from '@/types'
 
-export async function getServerSideProps({
-  params
-}): Promise<GetServerSidePropsResult<unknown>> {
-  const data = await fetch(`${config.api_url}/retrieveAd/${params.adId}`).then(
-    (r) => r.json()
-  )
+type UserInfo = {
+  imageUser: string
+  levelUser: string
+  starsNb: number
+  phone: string
+  firstname: string
+}
+
+type UserAd = {
+  user: UserInfo
+  ad: AdsType
+}
+
+type Props = {
+  userAd: UserAd
+}
+
+type Params = {
+  adId: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ params }) => {
+  const data: UserAd = await fetch(`${config.api_url}/retrieveAd/${params?.adId}`).then((r) => r.json())
   if (!data) {
     return {
       notFound: true
@@ -20,28 +37,25 @@ export async function getServerSideProps({
   }
   return {
     props: {
-      adFetched: data
+      userAd: data
     }
   }
 }
 
-export default function AdPage({ adFetched }): JSX.Element {
+export default function AdPage({ userAd }: Props) {
   const router = useRouter()
-  const adIdRoute = router.query.adId
+  const adIdInRoute = router.query.adId
 
-  const { data, isLoading, isError } = useQuery(
-    ['ad', adIdRoute],
+  // Typer le useQuery
+  const { data, isLoading, isError } = useQuery<UserAd>(
+    ['ad', adIdInRoute],
     () => {
-      return axios(`${config.api_url}/retrieveAd/${adIdRoute}`) as any
+      return fetch(`${config.api_url}/retrieveAd/${adIdInRoute}`).then((r) => r.json())
     },
     {
-      initialData: {
-        data: adFetched
-      }
+      initialData: userAd
     }
   )
-
-  const { ad } = data.data
 
   return (
     <>
@@ -49,21 +63,13 @@ export default function AdPage({ adFetched }): JSX.Element {
         <Alert variant='destructive'>
           <AlertCircle className='h-4 w-4' />
           <AlertTitle>Erreur</AlertTitle>
-          <AlertDescription>
-            L&apos;annonce de l&apos;utilisateur vient d&apos;être supprimée
-          </AlertDescription>
+          <AlertDescription>L&apos;annonce de l&apos;utilisateur vient d&apos;être supprimée</AlertDescription>
         </Alert>
       ) : (
         <>
-          <h1>{isLoading ? 'Chargement...' : ad.title}</h1>
-          {ad.imagesWork?.map((imageWork, index) => (
-            <Image
-              key={index}
-              src={imageWork}
-              alt={ad.title}
-              width={400}
-              height={400}
-            />
+          <h1>{isLoading ? 'Chargement...' : data.ad.title}</h1>
+          {data.ad.imagesWork?.map((imageWork, index) => (
+            <Image key={index} src={imageWork} alt={data.ad.title} width={400} height={400} />
           ))}
         </>
       )}

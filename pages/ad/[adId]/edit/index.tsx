@@ -1,131 +1,88 @@
-import { UserContext } from '../../../../contexts/userContext/userContext'
-import AdForm from '../../../../components/adForm/adForm'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { NewAdFormType } from '../../../../components/adForm/types'
-import { newAdFields } from '../../../../data/fields/newAdFields'
-import Input from '../../../../components/input/input'
-import Image from 'next/image'
-import loader from '../../../../assets/images/loader/y3Hm3.gif'
-import { useContext, useState, useEffect } from 'react'
+import { AdForm } from '../../../../components/adForm/adForm'
+import { SubmitHandler } from 'react-hook-form'
+import { AdFormType } from '../../../../components/adForm/types'
+import { useState } from 'react'
 import { MessageCreateAdType } from '../../types'
-import axios from 'axios'
 import { config } from '../../../../utils/config'
-import { DevTool } from '@hookform/devtools'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
+import { AdsType } from '@/types'
 
-export const getServerSideProps = async ({ params }) => {
-  const response = await fetch(
-    `${config.api_url}/retrieveAd/${params.adId}`
-  ).then((r) => r.json())
-  const { title, description, location, price } = response.ad
-  const defaultValues = {
-    title,
-    description,
-    location,
-    price
+type Props = {
+  ad: AdsType
+}
+
+type Params = {
+  adId: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ params }) => {
+  const response = await fetch(`${config.api_url}/retrieveAd/${params?.adId}`).then((r) => r.json())
+  if (!response) {
+    return {
+      notFound: true
+    }
   }
-
   return {
     props: {
-      defaultValues
+      ad: response.ad
     }
   }
 }
 
-export default function EditAd({ defaultValues }): JSX.Element {
+export default function EditAdPage({ ad }: Props) {
   const router = useRouter()
   const { adId } = router.query
-  const userCtx = useContext(UserContext)
-  const [apiResponseMessage, setApiResponseMessage] =
-    useState<MessageCreateAdType | null>(null)
+  const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAdType | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const generateErrorMessageValue = (name: string) => {
-    switch (name) {
-      case 'title':
-        return errors.title?.message
-      case 'description':
-        return errors.description?.message
-      case 'location':
-        return errors.location?.message
-      case 'price':
-        return errors.price?.message
-      default:
-        return undefined
-    }
-  }
-
-  const {
-    control,
-    handleSubmit,
-    register,
-    formState: { errors }
-  } = useForm<NewAdFormType>({ defaultValues })
-
-  const onSubmit: SubmitHandler<NewAdFormType> = async (data) => {
-    const response = await axios.post(
-      `${config.api_url}/modifyAd/${adId}`,
-      data
-    )
-    if (response.status === 200) {
-      setApiResponseMessage({
-        text: 'Votre annonce a bien été modifiée',
-        statusIsSuccess: true
+  // useMutation
+  const submit: SubmitHandler<AdFormType> = async (data) => {
+    fetch(`${config.api_url}/modifyAd/${adId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+      .then((response) => {
+        if (response.ok) {
+          setApiResponseMessage({
+            text: 'Votre annonce a bien été modifiée',
+            statusIsSuccess: true
+          })
+        } else {
+          setApiResponseMessage({
+            text: "Erreur : annonce non modifiée car elle n'existe plus",
+            statusIsSuccess: false
+          })
+        }
       })
-    } else {
-      setApiResponseMessage({
-        text: "Erreur, votre annonce n'a pas été modifiée",
-        statusIsSuccess: false
+      .catch((error) => {
+        setApiResponseMessage({
+          text: `Erreur : ${error}`,
+          statusIsSuccess: false
+        })
       })
-    }
-    setIsLoading(false)
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   return (
     <>
       <h1>Editer Annonce</h1>
-      <AdForm handleSubmit={handleSubmit} onSubmit={onSubmit}>
-        {newAdFields.map(({ type, name, title, value, message }: any) => (
-          <Input
-            key={name}
-            type={type}
-            name={name}
-            title={title}
-            register={{
-              ...register(name, {
-                required: true,
-                pattern: {
-                  value,
-                  message
-                }
-              })
-            }}
-            errorMessage={generateErrorMessageValue(name)}
-          />
-        ))}
-        <button
-          className='flex items-center mx-auto'
-          type='submit'
-          disabled={isLoading || apiResponseMessage?.statusIsSuccess}
-        >
-          {isLoading ? "En cours d'envoi" : 'Envoyer'}
-          {isLoading && (
-            <Image src={loader} alt='loader' width={20} height={20} />
-          )}
-        </button>
-      </AdForm>
+
+      <AdForm
+        defaultValues={ad}
+        isLoading={isLoading}
+        disabled={Boolean(apiResponseMessage?.statusIsSuccess)}
+        onSubmit={submit}
+      />
+
       {apiResponseMessage && (
-        <p
-          className={
-            apiResponseMessage.statusIsSuccess
-              ? 'text-green-500'
-              : 'text-red-500'
-          }
-        >
+        <p className={apiResponseMessage.statusIsSuccess ? 'text-green-500' : 'text-red-500'}>
           {apiResponseMessage.text}
         </p>
       )}
-      <DevTool control={control} />
     </>
   )
 }

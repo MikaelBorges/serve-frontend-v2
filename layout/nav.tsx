@@ -20,7 +20,7 @@ const navElements = [
   } */
 ]
 
-export default function Nav() {
+export function Nav() {
   const userCtx = useContext(UserContext)
 
   const userIsLogged = userCtx.user?.token
@@ -33,9 +33,7 @@ export default function Nav() {
               {navElements.map(({ text, route, backgroundColor }) => (
                 <li key={route} className='[&:not(:last-child)]:mr-2'>
                   <Link href={route}>
-                    <a className='bg-blue-600 text-white h-10 py-2 px-4 rounded-full text-lg'>
-                      {text}
-                    </a>
+                    <a className='bg-blue-600 text-white h-10 py-2 px-4 rounded-full text-lg'>{text}</a>
                   </Link>
                 </li>
               ))}

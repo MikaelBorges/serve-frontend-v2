@@ -1,4 +1,4 @@
-export const newAdFields = [
+export const adFields = [
   {
     type: 'text',
     name: 'title',

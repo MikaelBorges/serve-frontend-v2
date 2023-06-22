@@ -1,125 +1,69 @@
-import { useContext, useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import Input from '../../components/input/input'
+import { useContext, useEffect, useState } from 'react'
+import { SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { DevTool } from '@hookform/devtools'
 import { useQuery } from '@tanstack/react-query'
-import Image from 'next/image'
-import loader from '../../assets/images/loader/y3Hm3.gif'
-import { newAdFields } from '../../data/fields/newAdFields'
-import { seconds } from '../../utils/seconds'
 import { UserContext } from '../../contexts/userContext/userContext'
-import axios from 'axios'
 import { config } from '../../utils/config'
-import AdForm from '../../components/adForm/adForm'
-import { NewAdFormType } from '../../components/adForm/types'
+import { AdForm } from '../../components/adForm/adForm'
+import { AdFormType } from '../../components/adForm/types'
 import { MessageCreateAdType } from './types'
 
 export default function NewAdPage() {
   const userCtx = useContext(UserContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [apiResponseMessage, setApiResponseMessage] =
-    useState<MessageCreateAdType | null>(null)
+  const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAdType | null>(null)
 
-  // Note > Si on passe par le contexte, j'ai l'erreur : Error: No router instance found
-  if (typeof window !== 'undefined') {
-    const userStorageDirty = localStorage.getItem('userStorage')
-    const userStorage = JSON.parse(userStorageDirty)
-    if (!userStorage.token) router.push('/')
-  }
+  const submit: SubmitHandler<AdFormType> = async (data) => {
+    try {
+      setApiResponseMessage(null)
+      setIsLoading(true)
 
-  const generateErrorMessageValue = (name: string) => {
-    switch (name) {
-      case 'title':
-        return errors.title?.message
-      case 'description':
-        return errors.description?.message
-      case 'location':
-        return errors.location?.message
-      case 'price':
-        return errors.price?.message
-      default:
-        return undefined
-    }
-  }
-
-  const {
-    control,
-    handleSubmit,
-    register,
-    formState: { errors }
-  } = useForm<NewAdFormType>()
-
-  const onSubmit: SubmitHandler<NewAdFormType> = async (data) => {
-    setApiResponseMessage(null)
-    setIsLoading(true)
-    //await seconds(2)
-
-    const response = await axios.post(
-      `${config.api_url}/user/ad/${userCtx.user?._id}`,
-      data
-    )
-
-    if (response.status === 200) {
-      setApiResponseMessage({
-        text: 'Votre annonce a bien été créée',
-        statusIsSuccess: true
+      const response = await fetch(`${config.api_url}/user/ad/${userCtx.user?._id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       })
-    } else {
+
+      if (response.ok) {
+        setApiResponseMessage({
+          text: 'Votre annonce a bien été créée',
+          statusIsSuccess: true
+        })
+      } else {
+        setApiResponseMessage({
+          text: "Erreur, votre annonce n'a pas été créée",
+          statusIsSuccess: false
+        })
+      }
+    } catch (error) {
       setApiResponseMessage({
-        text: "Erreur, votre annonce n'a pas été créée",
+        text: `Erreur : ${error}`,
         statusIsSuccess: false
       })
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
+
+  useEffect(() => {
+    const userStorageDirty = localStorage.getItem('userStorage')
+    const userStorage = userStorageDirty ? JSON.parse(userStorageDirty) : null
+    console.log('userStorage', userStorage)
+    if (!userStorage.token) router.push('/')
+  }, [router])
 
   return (
     <>
       <h1 className='text-3xl'>Nouvelle annonce</h1>
-      <AdForm handleSubmit={handleSubmit} onSubmit={onSubmit}>
-        {newAdFields.map(({ type, name, title, value, message }: any) => (
-          <Input
-            key={name}
-            type={type}
-            name={name}
-            title={title}
-            register={{
-              ...register(name, {
-                required: true,
-                pattern: {
-                  value,
-                  message
-                }
-              })
-            }}
-            errorMessage={generateErrorMessageValue(name)}
-          />
-        ))}
-        <button
-          className='flex items-center mx-auto'
-          type='submit'
-          disabled={isLoading || apiResponseMessage?.statusIsSuccess}
-        >
-          {isLoading ? "En cours d'envoi" : 'Envoyer'}
-          {isLoading && (
-            <Image src={loader} alt='loader' width={20} height={20} />
-          )}
-        </button>
-      </AdForm>
+
+      <AdForm isLoading={isLoading} disabled={Boolean(apiResponseMessage?.statusIsSuccess)} onSubmit={submit} />
+
       {apiResponseMessage && (
-        <p
-          className={
-            apiResponseMessage.statusIsSuccess
-              ? 'text-green-500'
-              : 'text-red-500'
-          }
-        >
+        <p className={apiResponseMessage.statusIsSuccess ? 'text-green-500' : 'text-red-500'}>
           {apiResponseMessage.text}
         </p>
       )}
-      <DevTool control={control} />
     </>
   )
 }

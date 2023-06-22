@@ -1,23 +1,33 @@
 import { useContext } from 'react'
 import { UserContext } from '../../../contexts/userContext/userContext'
 import { useRouter } from 'next/router'
-import CardList from '../../../components/cardList/cardList'
+import { CardList } from '../../../components/cardList/cardList'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { config } from '../../../utils/config'
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
-import type { GetServerSidePropsResult } from 'next'
+import type { GetServerSideProps } from 'next'
 import { telescopeIcon, lightIcon } from '@/assets/icons/icons'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
+import { AdsType } from '@/types'
 
-export async function getServerSideProps({
-  params
-}): Promise<GetServerSidePropsResult<unknown>> {
-  const data = await fetch(`${config.api_url}/user/${params.userId}`).then(
-    (r) => r.json()
-  )
+type UserAds = {
+  userFirstname: string
+  userAds: AdsType[]
+}
+
+type Props = {
+  userAdsFetched: UserAds
+}
+
+type Params = {
+  userId: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ params }) => {
+  const data: UserAds = await fetch(`${config.api_url}/user/${params?.userId}`).then((r) => r.json())
   if (!data) {
     return {
       notFound: true
@@ -30,11 +40,11 @@ export async function getServerSideProps({
   }
 }
 
-export default function UserPage({ userAdsFetched }): JSX.Element {
+export default function UserPage({ userAdsFetched }: Props) {
   const userPageFirstname = userAdsFetched.userFirstname
   const hour = new Date().getHours()
   const router = useRouter()
-  const userIdRoute = router.query.userId
+  const userIdInRoute = router.query.userId
   const userCtx = useContext(UserContext)
   const userFirstname = userCtx.user?.firstname
   const userId = userCtx.user?._id
@@ -42,21 +52,22 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
   //const userFirstname = 'John'
   //const userId = '62fc16903edbb27f94be99cf'
 
-  const { data, isLoading, isError } = useQuery(
-    ['userAds', userIdRoute],
+  const { data, isLoading, isError } = useQuery<UserAds>(
+    ['userAds', userIdInRoute],
     () => {
-      return axios(`${config.api_url}/user/${userIdRoute}`) as any
+      return fetch(`${config.api_url}/user/${userIdInRoute}`).then((r) => r.json())
     },
     {
-      initialData: {
-        data: userAdsFetched
-      }
+      initialData: userAdsFetched
     }
   )
 
-  const { userAds } = data.data
-
   const handleLogout = async () => {
+    /* await fetch(`${config.api_url}/user/logout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userId)
+    }) */
     await axios.post(`${config.api_url}/user/logout`)
     localStorage.removeItem('userStorage')
     userCtx.setUser(null)
@@ -69,13 +80,11 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
         <Alert variant='destructive'>
           <AlertCircle className='h-4 w-4' />
           <AlertTitle>Erreur</AlertTitle>
-          <AlertDescription>
-            L&apos;utilisateur n&apos;existe plus
-          </AlertDescription>
+          <AlertDescription>L&apos;utilisateur n&apos;existe plus</AlertDescription>
         </Alert>
       ) : (
         <div>
-          {userIdRoute === userId && (
+          {userIdInRoute === userId && (
             <aside>
               <h2 className='text-2xl mb-6'>
                 {hour > 6 && hour < 20 ? 'Bonjour' : 'Bonsoir'} {userFirstname}{' '}
@@ -93,22 +102,18 @@ export default function UserPage({ userAdsFetched }): JSX.Element {
               ? 'Chargement...'
               : userCtx.user === null
               ? ''
-              : userAds.length
-              ? userIdRoute === userId
+              : data.userAds.length
+              ? userIdInRoute === userId
                 ? 'Voici vos annonces'
                 : `Annonces de ${userPageFirstname}`
-              : userIdRoute === userId
+              : userIdInRoute === userId
               ? "Vous n'avez aucune annonce"
               : "L'utilisateur n'a aucune annonce"}
           </h1>
-          {Boolean(userAds.length) && <CardList ads={userAds} />}
-          {userIdRoute === userId && (
+          {Boolean(data.userAds.length) && <CardList listAds={data.userAds} />}
+          {userIdInRoute === userId && (
             <div className='flex justify-end'>
-              <Button
-                size='sm'
-                variant='warnDestructive'
-                onClick={() => handleLogout()}
-              >
+              <Button size='sm' variant='warnDestructive' onClick={() => handleLogout()}>
                 Se déconnecter
               </Button>
             </div>

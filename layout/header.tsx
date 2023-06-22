@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { buttonVariants } from '@/components/ui/button'
 
-export default function Header(): JSX.Element {
+export function Header() {
   const userCtx = useContext(UserContext)
   //const { userId, userIsLogged, userImage } = userCtx
   //const { userId, userIsLogged } = userCtx

@@ -1,42 +1,11 @@
-import CardList from '../components/cardList/cardList'
+import { CardList } from '../components/cardList/cardList'
 import { config } from '../utils/config'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { CardType, AdsFetched } from '../types'
-import type { GetServerSidePropsResult } from 'next'
+import { AdsFetched } from '../types'
+import type { GetServerSideProps } from 'next'
 
-const filters = [
-  {
-    title: 'Prix',
-    type: 'text',
-    childs: ['min', 'max']
-  },
-  {
-    title: 'Lieu',
-    type: 'text',
-    childs: ['ville']
-  },
-  {
-    title: 'Super user',
-    type: 'radio',
-    childs: ['oui', 'non']
-  },
-  {
-    title: 'Avec photos seulement',
-    type: 'radio',
-    childs: ['oui', 'non']
-  },
-  {
-    title: 'Note',
-    type: 'radio',
-    childs: ['1', '2', '3', '4', '5']
-  }
-]
-
-export async function getServerSideProps(): Promise<
-  GetServerSidePropsResult<AdsFetched>
-> {
-  const data: CardType[] = await fetch(config.api_url).then((r) => r.json())
+export const getServerSideProps: GetServerSideProps = async () => {
+  const data: AdsFetched = await fetch(config.api_url).then((r) => r.json())
   return {
     props: {
       adsFetched: data
@@ -44,45 +13,31 @@ export async function getServerSideProps(): Promise<
   }
 }
 
-export default function Home({ adsFetched }: AdsFetched): JSX.Element {
+// Typer le useQuery
+export default function Home({ adsFetched }: AdsFetched) {
   const { data, isLoading, isError } = useQuery(
     ['allAds'],
     () => {
-      return axios(config.api_url) as any
+      return fetch(config.api_url).then((r) => r.json())
     },
     {
-      initialData: {
-        data: adsFetched
-      }
+      initialData: adsFetched
     }
   )
 
-  const { allAds } = data.data
-
   return (
     <>
-      {/* {filters.length && (
-        <aside className='bg-gray-700'>
-          <h2 className='font-bold'>Filtres :</h2>
-          <ul>
-            {filters.map(({ title }, index) => (
-              <li key={index}>{title}</li>
-            ))}
-          </ul>
-        </aside>
-      )} */}
-
       <h1 className='text-3xl'>
         {isError
           ? 'Erreur dans la récupération des annonces'
           : isLoading
           ? 'Chargement...'
-          : allAds.length
+          : data.allAds.length
           ? 'Toutes les annonces'
           : 'Aucune annonces'}
       </h1>
 
-      {Boolean(allAds.length) && <CardList ads={allAds} />}
+      {Boolean(data.allAds.length) && <CardList listAds={data.allAds} />}
     </>
   )
 }

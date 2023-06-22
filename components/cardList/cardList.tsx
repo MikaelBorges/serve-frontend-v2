@@ -1,43 +1,16 @@
-import { AdListProps } from './types'
-import CardAd from '../cardAd/cardAd'
+import { CardAd } from '../cardAd/cardAd'
+import { AdsType } from '../../types'
 
-export default function CardList({ ads }: AdListProps): JSX.Element {
+type AdListProps = {
+  listAds: AdsType[]
+}
+
+export function CardList({ listAds }: AdListProps) {
   return (
-    <>
-      <ul className='flex flex-col mt-6'>
-        {ads.map(
-          ({
-            title,
-            _id,
-            userId,
-            imagesWork,
-            imageUser,
-            description,
-            price,
-            starsNb,
-            favoritesNb,
-            location,
-            levelUser,
-            initials
-          }) => (
-            <CardAd
-              key={_id}
-              price={price}
-              levelUser={levelUser}
-              starsNb={starsNb}
-              location={location}
-              favoritesNb={favoritesNb}
-              description={description}
-              title={title}
-              _id={_id}
-              userId={userId}
-              imagesWork={imagesWork}
-              imageUser={imageUser}
-              initials={initials}
-            />
-          )
-        )}
-      </ul>
-    </>
+    <ul className='flex flex-col mt-6'>
+      {listAds.map((ads) => (
+        <CardAd key={ads._id} ads={ads} />
+      ))}
+    </ul>
   )
 }
