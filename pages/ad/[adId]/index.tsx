@@ -46,7 +46,6 @@ export default function AdPage({ userAd }: Props) {
   const router = useRouter()
   const adIdInRoute = router.query.adId
 
-  // Typer le useQuery
   const { data, isLoading, isError } = useQuery<UserAd>(
     ['ad', adIdInRoute],
     () => {
@@ -56,6 +55,8 @@ export default function AdPage({ userAd }: Props) {
       initialData: userAd
     }
   )
+
+  console.log('data', data)
 
   return (
     <>

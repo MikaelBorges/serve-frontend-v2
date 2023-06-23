@@ -25,6 +25,19 @@ export default function Home({ adsFetched }: AdsFetched) {
     }
   )
 
+  const voitures = [
+    {
+      marque: 'ford',
+      modele: 'mustang',
+      passagers: ['mika', 'ornella', 'papa']
+    },
+    {
+      marque: 'opel',
+      modele: 'astra',
+      passagers: ['pierre', 'paul', 'jack']
+    }
+  ]
+
   return (
     <>
       <h1 className='text-3xl'>

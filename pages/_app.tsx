@@ -22,7 +22,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
               <link rel='icon' href='/favicon.ico' />
             </Head>
             <Component {...pageProps} />
-            <ReactQueryDevtools />
+            {/* <ReactQueryDevtools /> */}
           </Layout>
         </ThemeContextProvider>
       </UserContextProvider>

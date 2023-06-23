@@ -46,18 +46,15 @@ export function CardAd({ ads }: CardAdsProps) {
       body: JSON.stringify(dataForDeletion)
     })
       .then((response) => {
-        if (response.ok) console.log('Votre annonce a bien été supprimée')
+        if (response.ok) console.log('Votre annonce a bien été supprimée + refaire un useQuery')
         else console.log("Erreur : annonce non supprimée car elle n'existe pas")
-        return response.json()
+        //return response.json()
       })
-      .then((json) => {
+      /* .then((json) => {
         console.log('json', json)
-      })
+      }) */
       .catch((error) => {
         console.log(`Erreur : ${error}`)
-      })
-      .finally(() => {
-        console.log('Promesse traitée')
       })
   }
 

@@ -11,13 +11,14 @@ import loader from '../../assets/images/loader/y3Hm3.gif'
 import { createUserAdditionalFields } from '../../data/fields/createUserAdditionalFields'
 
 export default function IndentifyPage() {
-  const router = useRouter()
   const [userExist, setUserExist] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAccountType | null>(null)
 
+  const router = useRouter()
   const userCtx = useContext(UserContext)
   const userIsLogged = userCtx.user?.token
+
   if (userIsLogged) router.push('/')
 
   const {
@@ -112,7 +113,7 @@ export default function IndentifyPage() {
           body: JSON.stringify(data)
         })
           .then((response) => {
-            console.log('response', response)
+            //console.log('response', response)
             if (response.ok) {
               setApiResponseMessage({
                 text: 'Votre compte a bien été créé',
@@ -136,7 +137,7 @@ export default function IndentifyPage() {
       <h1 className='text-3xl'>Identifiez-vous</h1>
       <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
         <Input
-          type='text'
+          type='email'
           name='email'
           title='Votre email'
           register={{

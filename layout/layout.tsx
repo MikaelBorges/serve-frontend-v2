@@ -5,7 +5,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className='px-3 min-h-[calc(100vh-(2*66px))]'>{children}</main>
+      <main className='p-3 min-h-[calc(100vh-(2*66px))]'>{children}</main>
       <Nav />
     </>
   )
