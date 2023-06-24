@@ -8,31 +8,22 @@ import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
-import { DevTool } from '@hookform/devtools'
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.'
-  }),
-  description: z.string().min(2, {
-    message: 'Description must be at least 2 characters.'
-  }),
-  location: z.string().min(2, {
-    message: 'Location must be at least 2 characters.'
-  }),
-  price: z.string().min(1, {
-    message: 'Price must be at least 1 characters.'
-  })
-})
+import { Textarea } from '@/components/ui/textarea'
+import { formSchema } from './schema/adSchema'
+import { MotionLabel } from '@/components/motionLabel/motionLabel'
 
 export default function NewAdPage() {
   const userCtx = useContext(UserContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAdType | null>(null)
+  const [focusTitle, setFocusTitle] = useState(false)
+  const [focusDescription, setFocusDescription] = useState(false)
+  const [focusLocation, setFocusLocation] = useState(false)
+  const [focusPrice, setFocusPrice] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -83,12 +74,13 @@ export default function NewAdPage() {
   useEffect(() => {
     const userStorageDirty = localStorage.getItem('userStorage')
     const userStorage = userStorageDirty ? JSON.parse(userStorageDirty) : null
-    if (!userStorage.token) router.push('/')
+    if (!userStorage?.token) router.push('/')
   }, [router])
 
   return (
-    <>
+    <section className='p-3'>
       <h1 className='text-3xl mb-6'>Ajouter une annonce</h1>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <FormField
@@ -96,9 +88,15 @@ export default function NewAdPage() {
             name='title'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Titre</FormLabel>
+                <MotionLabel name='Titre' focus={focusTitle} />
                 <FormControl onChange={() => handleRemoveApiMessage()}>
-                  <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='text' {...field} />
+                  <Input
+                    onFocus={() => setFocusTitle(true)}
+                    id='Titre'
+                    disabled={isLoading || apiResponseMessage?.statusIsSuccess}
+                    type='text'
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>Choisissez un titre pour votre annonce</FormDescription>
                 <FormMessage />
@@ -110,9 +108,14 @@ export default function NewAdPage() {
             name='description'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <MotionLabel name='Description' focus={focusDescription} />
                 <FormControl onChange={() => handleRemoveApiMessage()}>
-                  <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='text' {...field} />
+                  <Textarea
+                    onFocus={() => setFocusDescription(true)}
+                    id='Description'
+                    disabled={isLoading || apiResponseMessage?.statusIsSuccess}
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>Décrivez au mieux votre annonce</FormDescription>
                 <FormMessage />
@@ -124,9 +127,15 @@ export default function NewAdPage() {
             name='location'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ville</FormLabel>
+                <MotionLabel name='Ville' focus={focusLocation} />
                 <FormControl onChange={() => handleRemoveApiMessage()}>
-                  <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='text' {...field} />
+                  <Input
+                    onFocus={() => setFocusLocation(true)}
+                    id='Ville'
+                    disabled={isLoading || apiResponseMessage?.statusIsSuccess}
+                    type='text'
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>La ville où elle est disponible</FormDescription>
                 <FormMessage />
@@ -138,9 +147,15 @@ export default function NewAdPage() {
             name='price'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prix</FormLabel>
+                <MotionLabel name='Prix' focus={focusPrice} />
                 <FormControl onChange={() => handleRemoveApiMessage()}>
-                  <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='number' {...field} />
+                  <Input
+                    onFocus={() => setFocusPrice(true)}
+                    id='Prix'
+                    disabled={isLoading || apiResponseMessage?.statusIsSuccess}
+                    type='number'
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>Le prix de votre annonce</FormDescription>
                 <FormMessage />
@@ -154,7 +169,7 @@ export default function NewAdPage() {
                 Création en cours
               </>
             ) : (
-              <>Créér</>
+              <>Créér mon annonce</>
             )}
           </Button>
         </form>
@@ -163,8 +178,7 @@ export default function NewAdPage() {
             {apiResponseMessage.text}
           </p>
         )}
-        <DevTool control={form.control} />
       </Form>
-    </>
+    </section>
   )
 }

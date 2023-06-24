@@ -5,7 +5,7 @@ export const config = {
   api_url: 'http://localhost:3306',
 
   // Lorsque le pc est connecté en partage de connexion
-  // api_url: "http://172.20.10.9:3306",
+  // api_url: 'http://172.20.10.9:3306',
 
   // Lorsqu'on veut se connecter à l'api en ligne
   // api_url: 'https://mikaelborges-serve.herokuapp.com',

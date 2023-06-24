@@ -25,21 +25,8 @@ export default function Home({ adsFetched }: AdsFetched) {
     }
   )
 
-  const voitures = [
-    {
-      marque: 'ford',
-      modele: 'mustang',
-      passagers: ['mika', 'ornella', 'papa']
-    },
-    {
-      marque: 'opel',
-      modele: 'astra',
-      passagers: ['pierre', 'paul', 'jack']
-    }
-  ]
-
   return (
-    <>
+    <section className='p-3'>
       <h1 className='text-3xl'>
         {isError
           ? 'Erreur dans la récupération des annonces'
@@ -51,6 +38,6 @@ export default function Home({ adsFetched }: AdsFetched) {
       </h1>
 
       {Boolean(data.allAds.length) && <CardList listAds={data.allAds} />}
-    </>
+    </section>
   )
 }

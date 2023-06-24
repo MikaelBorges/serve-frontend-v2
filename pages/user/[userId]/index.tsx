@@ -83,7 +83,7 @@ export default function UserPage({ userAdsFetched }: Props) {
           <AlertDescription>L&apos;utilisateur n&apos;existe plus</AlertDescription>
         </Alert>
       ) : (
-        <div>
+        <section className='p-3'>
           {userIdInRoute === userId && (
             <aside>
               <h2 className='text-2xl mb-6'>
@@ -118,7 +118,7 @@ export default function UserPage({ userAdsFetched }: Props) {
               </Button>
             </div>
           )}
-        </div>
+        </section>
       )}
     </>
   )

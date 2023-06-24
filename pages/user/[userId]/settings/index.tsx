@@ -1,6 +1,5 @@
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
-import { DevTool } from '@hookform/devtools'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -13,24 +12,7 @@ import { UserContext } from '../../../../contexts/userContext/userContext'
 import { useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import type { GetServerSideProps } from 'next'
-
-const formSchema = z.object({
-  email: z.string().min(6, {
-    message: 'Email must be at least 6 characters.'
-  }),
-  password: z.string().min(3, {
-    message: 'Password must be at least 3 characters.'
-  }),
-  firstname: z.string().min(2, {
-    message: 'Firstname must be at least 2 characters.'
-  }),
-  lastname: z.string().min(2, {
-    message: 'Lastname must be at least 2 characters.'
-  }),
-  phone: z.string().min(10, {
-    message: 'Phone must be at least 10 numbers.'
-  })
-})
+import { formSchema } from '../../schemas/registerOrModifyUserSchema'
 
 type UserInfo = {
   imageUser: string
@@ -83,16 +65,12 @@ export default function UserSettingsPage({ userInfo }: Props) {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setApiResponseMessage(null)
     setIsLoading(true)
-
-    //console.log('userId', userId)
-
     fetch(`${config.api_url}/user/changeUserData/${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values)
     })
       .then((response) => {
-        //console.log('response', response)
         if (response.ok) {
           setApiResponseMessage({
             text: 'Votre compte a bien été modifié',
@@ -103,6 +81,13 @@ export default function UserSettingsPage({ userInfo }: Props) {
             text: "Erreur, votre compte n'a pas été modifié",
             statusIsSuccess: false
           })
+        }
+        return response.json()
+      })
+      .then((json) => {
+        if (json) {
+          const { firstname, initials } = json.userUpdateForContext
+          userCtx.setUser({ ...userCtx.user, firstname, initials })
         }
       })
       .catch((error) => console.log(`Erreur : ${error}`))
@@ -122,7 +107,7 @@ export default function UserSettingsPage({ userInfo }: Props) {
   }, [router])
 
   return (
-    <>
+    <section className='p-3'>
       <h1 className='text-3xl mb-6'>Modifier mon compte</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
@@ -140,7 +125,6 @@ export default function UserSettingsPage({ userInfo }: Props) {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Entrez votre email</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -154,7 +138,7 @@ export default function UserSettingsPage({ userInfo }: Props) {
                 <FormControl onChange={() => handleRemoveApiMessage()}>
                   <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='password' {...field} />
                 </FormControl>
-                <FormDescription>Choisissez un mot de passe</FormDescription>
+                <FormDescription>Choisissez un mot de passe minimum 3 caractères</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -173,7 +157,6 @@ export default function UserSettingsPage({ userInfo }: Props) {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Entrez votre prénom</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -192,7 +175,6 @@ export default function UserSettingsPage({ userInfo }: Props) {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Entrez votre nom</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -211,7 +193,7 @@ export default function UserSettingsPage({ userInfo }: Props) {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Entrez votre numéro de téléphone</FormDescription>
+                <FormDescription>Si c&apos;est un numéro étranger, utilisez le préfixe international</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -223,7 +205,7 @@ export default function UserSettingsPage({ userInfo }: Props) {
                 Modification en cours
               </>
             ) : (
-              <>Modifier</>
+              <>Modifier mon compte</>
             )}
           </Button>
         </form>
@@ -233,7 +215,6 @@ export default function UserSettingsPage({ userInfo }: Props) {
           {apiResponseMessage.text}
         </p>
       )}
-      <DevTool control={form.control} />
-    </>
+    </section>
   )
 }

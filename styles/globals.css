@@ -94,7 +94,7 @@
     background-color: #22272e;
   } */
   :root {
-    --background: 215, 15%, 16%;
+    --background: 215 15% 16%;
     --foreground: 213 31% 91%;
 
     --muted: 223 47% 11%;

@@ -11,15 +11,7 @@ import { MessageCreateAccountType } from '../types'
 import { UserContext } from '../../../contexts/userContext/userContext'
 import { useRouter } from 'next/router'
 import { Loader2 } from 'lucide-react'
-
-const formSchema = z.object({
-  email: z.string().min(6, {
-    message: 'Email must be at least 6 characters.'
-  }),
-  password: z.string().min(3, {
-    message: 'Password must be at least 3 characters.'
-  })
-})
+import { formSchema } from '../schemas/loginUserSchema'
 
 export default function LoginPage() {
   const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAccountType | null>(null)
@@ -77,53 +69,55 @@ export default function LoginPage() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='email'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl onChange={() => handleRemoveApiMessage()}>
-                <Input type='email' placeholder='exemple@email.com' {...field} />
-              </FormControl>
-              <FormDescription>Entrez votre email</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
-              <FormControl onChange={() => handleRemoveApiMessage()}>
-                <Input type='password' {...field} />
-              </FormControl>
-              <FormDescription>Choisissez un mot de passe</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button size='lg' disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='submit'>
-          {isLoading ? (
-            <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-              Connexion en cours
-            </>
-          ) : (
-            <>Se connecter</>
-          )}
-        </Button>
-      </form>
-      {apiResponseMessage && (
-        <p className={`mt-8 ${apiResponseMessage.statusIsSuccess ? 'text-green-500' : 'text-red-500'}`}>
-          {apiResponseMessage.text}
-        </p>
-      )}
-      <DevTool control={form.control} />
-    </Form>
+    <section className='p-3'>
+      <h1 className='text-3xl mb-6'>Se connecter</h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl onChange={() => handleRemoveApiMessage()}>
+                  <Input type='email' placeholder='exemple@email.com' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mot de passe</FormLabel>
+                <FormControl onChange={() => handleRemoveApiMessage()}>
+                  <Input type='password' {...field} />
+                </FormControl>
+                <FormDescription>Choisissez un mot de passe minimum 3 caractères</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button size='lg' disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='submit'>
+            {isLoading ? (
+              <>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Connexion en cours
+              </>
+            ) : (
+              <>Se connecter</>
+            )}
+          </Button>
+        </form>
+        {apiResponseMessage && (
+          <p className={`mt-8 ${apiResponseMessage.statusIsSuccess ? 'text-green-500' : 'text-red-500'}`}>
+            {apiResponseMessage.text}
+          </p>
+        )}
+        <DevTool control={form.control} />
+      </Form>
+    </section>
   )
 }

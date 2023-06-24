@@ -6,6 +6,10 @@ import type { GetServerSideProps } from 'next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { AdsType } from '@/types'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { moneyIcon, starIcon, heartIcon, smartphoneIcon } from '@/assets/icons/icons'
+import { HiLocationMarker } from 'react-icons/hi'
 
 type UserInfo = {
   imageUser: string
@@ -13,6 +17,7 @@ type UserInfo = {
   starsNb: number
   phone: string
   firstname: string
+  initials: string
 }
 
 type UserAd = {
@@ -56,10 +61,17 @@ export default function AdPage({ userAd }: Props) {
     }
   )
 
-  console.log('data', data)
+  const displayStars = (starsNb: AdsType['starsNb']) => {
+    let stringOfStars = ''
+    while (starsNb) {
+      stringOfStars += starIcon
+      --starsNb
+    }
+    return stringOfStars
+  }
 
   return (
-    <>
+    <section>
       {isError ? (
         <Alert variant='destructive'>
           <AlertCircle className='h-4 w-4' />
@@ -68,12 +80,43 @@ export default function AdPage({ userAd }: Props) {
         </Alert>
       ) : (
         <>
-          <h1>{isLoading ? 'Chargement...' : data.ad.title}</h1>
-          {data.ad.imagesWork?.map((imageWork, index) => (
-            <Image key={index} src={imageWork} alt={data.ad.title} width={400} height={400} />
-          ))}
+          {data.ad.imagesWork.length && (
+            <div className='flex'>
+              <Image src={data.ad.imagesWork[0]} alt={data.ad.title} width={1400} height={1400} />
+            </div>
+          )}
+          <div className='p-3'>
+            <div className='flex justify-between mb-2'>
+              <Avatar>
+                <AvatarImage src={data.user.imageUser} />
+                <AvatarFallback>{data.user.initials}</AvatarFallback>
+              </Avatar>
+              {/* <Button size='lg' className='min-w-fit' variant='buttonCard'>
+                {data.ad.favoritesNb} {heartIcon}
+              </Button> */}
+            </div>
+            <p className='mb-2 text-sm'>Annonce mise en ligne le {data.ad.dateOfPublication}</p>
+            <h1 className='text-3xl'>{isLoading ? 'Chargement...' : data.ad.title}</h1>
+            <p className='text-xl text-red-500 flex items-center'>
+              <HiLocationMarker className='mr-1' />
+              {data.ad.location}
+            </p>
+            <p className='text-2xl text-fuchsia-500 dark:text-yellow-100'>
+              {moneyIcon} {data.ad.price} €/h
+            </p>
+            <p className='mb-4'>{displayStars(data.user.starsNb)}</p>
+            <p className='mb-4'>{data.ad.description}</p>
+            <p>Contacter {data.user.firstname} au :</p>
+            <a
+              href={`tel:${data.user.phone}`}
+              className='px-2 py-1 flex w-fit bg-slate-100 items-center rounded-full dark:bg-[#454D56]'
+            >
+              <span className='mr-1'>{smartphoneIcon}</span>
+              {data.user.phone}
+            </a>
+          </div>
         </>
       )}
-    </>
+    </section>
   )
 }

@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { buttonVariants } from '@/components/ui/button'
 import { AdsType } from '../../types'
+import { HiLocationMarker } from 'react-icons/hi'
 
 type CardAdsProps = {
   ads: AdsType
@@ -76,7 +77,7 @@ export function CardAd({ ads }: CardAdsProps) {
       }
     >
       {userIdInRoute === userContextId && (
-        <div className='flex mb-2'>
+        <div className='flex mb-2 justify-end'>
           <AlertDialog>
             <AlertDialogTrigger
               onClick={() => handleDeleteAd(ads._id)}
@@ -121,7 +122,10 @@ export function CardAd({ ads }: CardAdsProps) {
                   <CardHeader className='p-0'>
                     <CardTitle className='font-normal'>{ads.title}</CardTitle>
                     <CardContent className='p-0 flex justify-between'>
-                      <CardDescription className='text-xs'>{ads.location}</CardDescription>
+                      <CardDescription className='text-xs flex items-center text-red-500'>
+                        <HiLocationMarker className='mr-1' />
+                        {ads.location}
+                      </CardDescription>
                     </CardContent>
                   </CardHeader>
                 </a>
@@ -144,13 +148,13 @@ export function CardAd({ ads }: CardAdsProps) {
               </Link>
             </div>
             <Link href={`/ad/${ads._id}`}>
-              <a className='h-full'>
+              <a className='h-full flex items-center'>
                 <p className='dark:text-white leading-4'>{ads.description}</p>
               </a>
             </Link>
           </div>
           <CardFooter className='flex p-0'>
-            <Link href={`ad/${ads._id}`}>
+            <Link href={`/ad/${ads._id}`}>
               <a className='w-full'>
                 {ads.starsNb && <p className='text-[0.5rem]'>{displayStars(ads.starsNb)}</p>}
                 <p className='text-xs dark:text-yellow-100 text-fuchsia-500'>
@@ -159,7 +163,7 @@ export function CardAd({ ads }: CardAdsProps) {
               </a>
             </Link>
             {/* <Button className='min-w-fit' variant='buttonCard'>
-              {favoritesNb} {heartIcon}
+              {ads.favoritesNb} {heartIcon}
             </Button> */}
           </CardFooter>
         </div>

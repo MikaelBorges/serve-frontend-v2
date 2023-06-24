@@ -12,6 +12,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import { DevTool } from '@hookform/devtools'
+import { Textarea } from '@/components/ui/textarea'
+import { formSchema } from '../../schema/adSchema'
 
 type Props = {
   ad: AdsType
@@ -20,21 +22,6 @@ type Props = {
 type Params = {
   adId: string
 }
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.'
-  }),
-  description: z.string().min(2, {
-    message: 'Description must be at least 2 characters.'
-  }),
-  location: z.string().min(2, {
-    message: 'Location must be at least 2 characters.'
-  }),
-  price: z.string().min(1, {
-    message: 'Price must be at least 1 characters.'
-  })
-})
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ params }) => {
   const response = await fetch(`${config.api_url}/retrieveAd/${params?.adId}`).then((r) => r.json())
@@ -134,7 +121,7 @@ export default function EditAdPage({ ad }: Props) {
   }
 
   return (
-    <>
+    <section className='p-3'>
       <h1 className='text-3xl mb-6'>Modifier l&apos;annonce</h1>
 
       {/* <AdForm
@@ -167,7 +154,7 @@ export default function EditAdPage({ ad }: Props) {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl onChange={() => handleRemoveApiMessage()}>
-                  <Input disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='text' {...field} />
+                  <Textarea disabled={isLoading || apiResponseMessage?.statusIsSuccess} {...field} />
                 </FormControl>
                 <FormDescription>Décrivez au mieux votre annonce</FormDescription>
                 <FormMessage />
@@ -209,7 +196,7 @@ export default function EditAdPage({ ad }: Props) {
                 Modification en cours
               </>
             ) : (
-              <>Modifier</>
+              <>Modifier mon annonce</>
             )}
           </Button>
         </form>
@@ -221,6 +208,6 @@ export default function EditAdPage({ ad }: Props) {
         </p>
       )}
       <DevTool control={form.control} />
-    </>
+    </section>
   )
 }
