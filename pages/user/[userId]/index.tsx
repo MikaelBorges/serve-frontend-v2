@@ -52,7 +52,7 @@ export default function UserPage({ userAdsFetched }: Props) {
   //const userFirstname = 'John'
   //const userId = '62fc16903edbb27f94be99cf'
 
-  const { data, isLoading, isError } = useQuery<UserAds>(
+  const { data, isError } = useQuery<UserAds>(
     ['userAds', userIdInRoute],
     () => {
       return fetch(`${config.api_url}/user/${userIdInRoute}`).then((r) => r.json())
@@ -75,20 +75,21 @@ export default function UserPage({ userAdsFetched }: Props) {
   }
 
   return (
-    <>
-      {isError ? (
+    <section className='p-3'>
+      {isError || !data ? (
         <Alert variant='destructive'>
           <AlertCircle className='h-4 w-4' />
           <AlertTitle>Erreur</AlertTitle>
           <AlertDescription>L&apos;utilisateur n&apos;existe plus</AlertDescription>
         </Alert>
       ) : (
-        <section className='p-3'>
+        <>
           {userIdInRoute === userId && (
             <aside>
               <h2 className='text-2xl mb-6'>
-                {hour > 6 && hour < 20 ? 'Bonjour' : 'Bonsoir'} {userFirstname}{' '}
-                {hour > 6 && hour < 20 ? lightIcon : telescopeIcon}
+                {`${hour > 6 && hour < 20 ? 'Bonjour' : 'Bonsoir'} ${userFirstname} ${
+                  hour > 6 && hour < 20 ? lightIcon : telescopeIcon
+                }`}
               </h2>
               <Link href={`/user/${userId}/settings`}>
                 <a className='mb-6 inline-flex items-center justify-center bg-black text-white dark:bg-slate-200 dark:text-black h-10 py-2 px-4 rounded-full text-lg'>
@@ -97,29 +98,25 @@ export default function UserPage({ userAdsFetched }: Props) {
               </Link>
             </aside>
           )}
-          <h1 className='text-3xl'>
-            {isLoading
-              ? 'Chargement...'
-              : userCtx.user === null
-              ? ''
-              : data.userAds.length
+          <h1 className='text-3xl mb-6'>
+            {data.userAds.length
               ? userIdInRoute === userId
                 ? 'Voici vos annonces'
                 : `Annonces de ${userPageFirstname}`
               : userIdInRoute === userId
               ? "Vous n'avez aucune annonce"
-              : "L'utilisateur n'a aucune annonce"}
+              : `${userPageFirstname} n'a aucune annonce`}
           </h1>
           {Boolean(data.userAds.length) && <CardList listAds={data.userAds} />}
           {userIdInRoute === userId && (
-            <div className='flex justify-end'>
+            <div className='flex justify-end mt-6'>
               <Button size='sm' variant='warnDestructive' onClick={() => handleLogout()}>
                 Se déconnecter
               </Button>
             </div>
           )}
-        </section>
+        </>
       )}
-    </>
+    </section>
   )
 }

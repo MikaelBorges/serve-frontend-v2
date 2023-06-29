@@ -1,5 +1,6 @@
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
+import { DevTool } from '@hookform/devtools'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -215,6 +216,7 @@ export default function UserSettingsPage({ userInfo }: Props) {
           {apiResponseMessage.text}
         </p>
       )}
+      <DevTool control={form.control} />
     </section>
   )
 }

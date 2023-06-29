@@ -11,11 +11,14 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
+import { DevTool } from '@hookform/devtools'
 import { Textarea } from '@/components/ui/textarea'
 import { formSchema } from './schema/adSchema'
 import { MotionLabel } from '@/components/motionLabel/motionLabel'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function NewAdPage() {
+  const { toast } = useToast()
   const userCtx = useContext(UserContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -51,16 +54,31 @@ export default function NewAdPage() {
           text: 'Votre annonce a bien été créée',
           statusIsSuccess: true
         })
+        toast({
+          variant: 'success',
+          title: 'Annonce envoyée',
+          description: 'Votre annonce a bien été créée'
+        })
       } else {
         setApiResponseMessage({
           text: "Erreur, votre annonce n'a pas été créée",
           statusIsSuccess: false
+        })
+        toast({
+          variant: 'destructive',
+          title: 'Il y a eu un problème',
+          description: "Votre annonce n'a pas été envoyée"
         })
       }
     } catch (error) {
       setApiResponseMessage({
         text: `Erreur : ${error}`,
         statusIsSuccess: false
+      })
+      toast({
+        variant: 'destructive',
+        title: 'Il y a eu un problème',
+        description: "Votre annonce n'a pas été envoyée"
       })
     } finally {
       setIsLoading(false)
@@ -178,6 +196,7 @@ export default function NewAdPage() {
             {apiResponseMessage.text}
           </p>
         )}
+        <DevTool control={form.control} />
       </Form>
     </section>
   )

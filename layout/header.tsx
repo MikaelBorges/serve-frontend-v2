@@ -25,7 +25,6 @@ export function Header() {
 
   const userIsLogged = userCtx.user?.token
   const userId = userCtx.user?._id
-  //const fakeUserLogged = 'https://res.cloudinary.com/mika4ever/image/upload/v1661777175/my%20assets/apple/apple-governance-01.png'
   const imageUser = userCtx.user?.imageUser
   const initials = userCtx.user?.initials
 

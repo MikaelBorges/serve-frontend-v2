@@ -24,23 +24,35 @@ import {
 import { buttonVariants } from '@/components/ui/button'
 import { AdsType } from '../../types'
 import { HiLocationMarker } from 'react-icons/hi'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type CardAdsProps = {
-  ads: AdsType
+  ad: AdsType
 }
 
-export function CardAd({ ads }: CardAdsProps) {
+export function CardAd({ ad }: CardAdsProps) {
   const [dataForDeletion, setDataForDeletion] = useState({})
   const userCtx = useContext(UserContext)
   const userContextId = userCtx.user?._id
   const router = useRouter()
   const userIdInRoute = router.query.userId
+  const queryClient = useQueryClient()
 
-  const handleDeleteAd = (adId: AdsType['_id']) => {
-    setDataForDeletion({ userId: userContextId, adId })
-  }
+  const handleDeleteAd = (adId: AdsType['_id']) => setDataForDeletion({ userId: userContextId, adId })
 
-  const deleteAd = async () => {
+  const mutation = useMutation({
+    mutationFn: (dataForDeletion) =>
+      fetch(`${config.api_url}/deleteAd`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataForDeletion)
+      }).then((res) => res.json()),
+    onSuccess: () => queryClient.invalidateQueries(['userAds', userIdInRoute])
+  })
+
+  const deleteAd = () => mutation.mutate(dataForDeletion)
+
+  /* const deleteAd = async () => {
     fetch(`${config.api_url}/deleteAd`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -51,13 +63,13 @@ export function CardAd({ ads }: CardAdsProps) {
         else console.log("Erreur : annonce non supprimée car elle n'existe pas")
         //return response.json()
       })
-      /* .then((json) => {
-        console.log('json', json)
-      }) */
+      // .then((json) => {
+      //  console.log('json', json)
+      //})
       .catch((error) => {
         console.log(`Erreur : ${error}`)
       })
-  }
+  } */
 
   const displayStars = (starsNb: AdsType['starsNb']) => {
     let stringOfStars = ''
@@ -70,17 +82,15 @@ export function CardAd({ ads }: CardAdsProps) {
 
   return (
     <li
-      className={
-        userIdInRoute === userContextId
-          ? 'p-2 border-slate-400 rounded-3xl border-dashed border-2 mb-6 last:mb-3'
-          : '[&:not(:last-child)]:mb-6'
-      }
+      className={`[&:not(:last-child)]:mb-6
+        ${userIdInRoute === userContextId ? 'p-2 border-slate-400 rounded-3xl border-dashed border-2' : ''}
+          `}
     >
       {userIdInRoute === userContextId && (
         <div className='flex mb-2 justify-end'>
           <AlertDialog>
             <AlertDialogTrigger
-              onClick={() => handleDeleteAd(ads._id)}
+              onClick={() => handleDeleteAd(ad._id)}
               className='bg-red-500 text-white rounded-full px-1.5 mr-2'
             >
               <HiOutlineTrash />
@@ -101,7 +111,7 @@ export function CardAd({ ads }: CardAdsProps) {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Link href={`/ad/${ads._id}/edit`}>
+          <Link href={`/ad/${ad._id}/edit`}>
             <a className='inline-flex items-center justify-center bg-black text-white dark:bg-slate-200 dark:text-black rounded-full h-7 py-1 px-3 [&:not(:last-child)]:mr-1'>
               modifier
             </a>
@@ -109,61 +119,61 @@ export function CardAd({ ads }: CardAdsProps) {
         </div>
       )}
       <Card className='rounded-3xl border-0 flex overflow-hidden'>
-        {Boolean(ads.imagesWork.length) && (
+        {Boolean(ad.imagesWork.length) && (
           <div className='min-w-[9rem] w-36'>
-            <Image src={ads.imagesWork[0]} alt={ads.title} width={144} height={144} />
+            <Image src={ad.imagesWork[0]} alt={ad.title} width={144} height={144} />
           </div>
         )}
         <div className='p-2 w-full flex flex-col'>
           <div className='flex h-full flex-col'>
             <div className='flex'>
-              <Link href={`/ad/${ads._id}`}>
+              <Link href={`/ad/${ad._id}`}>
                 <a className='w-full'>
                   <CardHeader className='p-0'>
-                    <CardTitle className='font-normal'>{ads.title}</CardTitle>
+                    <CardTitle className='font-normal'>{ad.title}</CardTitle>
                     <CardContent className='p-0 flex justify-between'>
                       <CardDescription className='text-xs flex items-center text-red-500'>
                         <HiLocationMarker className='mr-1' />
-                        {ads.location}
+                        {ad.location}
                       </CardDescription>
                     </CardContent>
                   </CardHeader>
                 </a>
               </Link>
-              <Link href={`/user/${ads.userId}`}>
+              <Link href={`/user/${ad.userId}`}>
                 <a className='flex flex-col items-center'>
                   <Avatar>
-                    <AvatarImage src={ads.imageUser} />
-                    <AvatarFallback>{ads.initials}</AvatarFallback>
+                    <AvatarImage src={ad.imageUser} />
+                    <AvatarFallback>{ad.initials}</AvatarFallback>
                   </Avatar>
-                  {ads.levelUser && (
+                  {ad.levelUser && (
                     <Badge
-                      variant={ads.levelUser === 'Gold' ? 'gold' : 'ultra'}
+                      variant={ad.levelUser === 'Gold' ? 'gold' : 'ultra'}
                       className='text-[0.5rem] py-[0.05rem] px-1 mt-1 font-normal'
                     >
-                      {ads.levelUser}
+                      {ad.levelUser}
                     </Badge>
                   )}
                 </a>
               </Link>
             </div>
-            <Link href={`/ad/${ads._id}`}>
+            <Link href={`/ad/${ad._id}`}>
               <a className='h-full flex items-center'>
-                <p className='dark:text-white leading-4'>{ads.description}</p>
+                <p className='dark:text-white leading-4'>{ad.description}</p>
               </a>
             </Link>
           </div>
           <CardFooter className='flex p-0'>
-            <Link href={`/ad/${ads._id}`}>
+            <Link href={`/ad/${ad._id}`}>
               <a className='w-full'>
-                {ads.starsNb && <p className='text-[0.5rem]'>{displayStars(ads.starsNb)}</p>}
+                {ad.starsNb && <p className='text-[0.5rem]'>{displayStars(ad.starsNb)}</p>}
                 <p className='text-xs dark:text-yellow-100 text-fuchsia-500'>
-                  {moneyIcon} {ads.price} €/h
+                  {moneyIcon} {ad.price} €/h
                 </p>
               </a>
             </Link>
             {/* <Button className='min-w-fit' variant='buttonCard'>
-              {ads.favoritesNb} {heartIcon}
+              {ad.favoritesNb} {heartIcon}
             </Button> */}
           </CardFooter>
         </div>

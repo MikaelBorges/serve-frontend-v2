@@ -14,6 +14,7 @@ import { Loader2 } from 'lucide-react'
 import { DevTool } from '@hookform/devtools'
 import { Textarea } from '@/components/ui/textarea'
 import { formSchema } from '../../schema/adSchema'
+import { useToast } from '@/components/ui/use-toast'
 
 type Props = {
   ad: AdsType
@@ -38,6 +39,7 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ pa
 }
 
 export default function EditAdPage({ ad }: Props) {
+  const { toast } = useToast()
   const router = useRouter()
   const { adId } = router.query
   const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAdType | null>(null)
@@ -104,16 +106,31 @@ export default function EditAdPage({ ad }: Props) {
           text: 'Votre annonce a bien été modifiée',
           statusIsSuccess: true
         })
+        toast({
+          variant: 'success',
+          title: 'Annonce modifiée',
+          description: 'Votre annonce a bien été modifiée'
+        })
       } else {
         setApiResponseMessage({
           text: "Erreur, votre annonce n'a pas été modifiée",
           statusIsSuccess: false
+        })
+        toast({
+          variant: 'destructive',
+          title: 'Il y a eu un problème',
+          description: "Votre annonce n'a pas été modifiée"
         })
       }
     } catch (error) {
       setApiResponseMessage({
         text: `Erreur : ${error}`,
         statusIsSuccess: false
+      })
+      toast({
+        variant: 'destructive',
+        title: 'Il y a eu un problème',
+        description: "Votre annonce n'a pas été modifiée"
       })
     } finally {
       setIsLoading(false)

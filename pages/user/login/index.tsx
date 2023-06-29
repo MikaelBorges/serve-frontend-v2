@@ -12,16 +12,37 @@ import { UserContext } from '../../../contexts/userContext/userContext'
 import { useRouter } from 'next/router'
 import { Loader2 } from 'lucide-react'
 import { formSchema } from '../schemas/loginUserSchema'
+import { useMutation } from '@tanstack/react-query'
 
 export default function LoginPage() {
   const [apiResponseMessage, setApiResponseMessage] = useState<MessageCreateAccountType | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-
+  //const [isLoading, setIsLoading] = useState(false)
   const userCtx = useContext(UserContext)
   const router = useRouter()
   const userIsLogged = userCtx.user?.token
 
-  if (userIsLogged) router.push('/')
+  const handleSuccess = (data) => {
+    console.log('data', data)
+    const { token } = data
+    const { _id, firstname, imageUser, initials } = data.session.user
+    userCtx.setUser({ _id, firstname, token, imageUser, initials })
+  }
+
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      fetch(`${config.api_url}/user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values)
+      }).then((res) => res.json()),
+    onError: () =>
+      setApiResponseMessage({
+        text: "Le compte n'existe pas ou le mot de passe incorrect",
+        statusIsSuccess: false
+      }),
+    onSuccess: (data) => handleSuccess(data),
+    onSettled: () => setIsLoading(false)
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,9 +54,9 @@ export default function LoginPage() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setApiResponseMessage(null)
-    setIsLoading(true)
-
-    fetch(`${config.api_url}/user/login`, {
+    //setIsLoading(true)
+    mutation.mutate(values)
+    /* fetch(`${config.api_url}/user/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values)
@@ -61,12 +82,14 @@ export default function LoginPage() {
       .catch((error) => console.log(`Erreur : ${error}`))
       .finally(() => {
         setIsLoading(false)
-      })
+      }) */
   }
 
   const handleRemoveApiMessage = () => {
     if (!apiResponseMessage?.statusIsSuccess) setApiResponseMessage(null)
   }
+
+  if (userIsLogged) router.push('/')
 
   return (
     <section className='p-3'>
@@ -100,8 +123,8 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-          <Button size='lg' disabled={isLoading || apiResponseMessage?.statusIsSuccess} type='submit'>
-            {isLoading ? (
+          <Button size='lg' disabled={mutation.isLoading || apiResponseMessage?.statusIsSuccess} type='submit'>
+            {mutation.isLoading ? (
               <>
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 Connexion en cours

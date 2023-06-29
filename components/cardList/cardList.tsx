@@ -7,9 +7,9 @@ type AdListProps = {
 
 export function CardList({ listAds }: AdListProps) {
   return (
-    <ul className='flex flex-col mt-6'>
-      {listAds.map((ads) => (
-        <CardAd key={ads._id} ads={ads} />
+    <ul className='flex flex-col'>
+      {listAds.map((ad) => (
+        <CardAd key={ad._id} ad={ad} />
       ))}
     </ul>
   )

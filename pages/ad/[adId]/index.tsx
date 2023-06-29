@@ -51,7 +51,7 @@ export default function AdPage({ userAd }: Props) {
   const router = useRouter()
   const adIdInRoute = router.query.adId
 
-  const { data, isLoading, isError } = useQuery<UserAd>(
+  const { data, isError } = useQuery<UserAd>(
     ['ad', adIdInRoute],
     () => {
       return fetch(`${config.api_url}/retrieveAd/${adIdInRoute}`).then((r) => r.json())
@@ -80,7 +80,7 @@ export default function AdPage({ userAd }: Props) {
         </Alert>
       ) : (
         <>
-          {data.ad.imagesWork.length && (
+          {Boolean(data.ad.imagesWork.length) && (
             <div className='flex'>
               <Image src={data.ad.imagesWork[0]} alt={data.ad.title} width={1400} height={1400} />
             </div>
@@ -96,7 +96,7 @@ export default function AdPage({ userAd }: Props) {
               </Button> */}
             </div>
             <p className='mb-2 text-sm'>Annonce mise en ligne le {data.ad.dateOfPublication}</p>
-            <h1 className='text-3xl'>{isLoading ? 'Chargement...' : data.ad.title}</h1>
+            <h1 className='text-3xl'>{data.ad.title}</h1>
             <p className='text-xl text-red-500 flex items-center'>
               <HiLocationMarker className='mr-1' />
               {data.ad.location}

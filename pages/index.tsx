@@ -3,6 +3,8 @@ import { config } from '../utils/config'
 import { useQuery } from '@tanstack/react-query'
 import { AdsFetched } from '../types'
 import type { GetServerSideProps } from 'next'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const data: AdsFetched = await fetch(config.api_url).then((r) => r.json())
@@ -14,8 +16,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 // Typer le useQuery
-export default function Home({ adsFetched }: AdsFetched) {
-  const { data, isLoading, isError } = useQuery(
+export default function HomePage({ adsFetched }: AdsFetched) {
+  const { data, isError } = useQuery(
     ['allAds'],
     () => {
       return fetch(config.api_url).then((r) => r.json())
@@ -27,17 +29,18 @@ export default function Home({ adsFetched }: AdsFetched) {
 
   return (
     <section className='p-3'>
-      <h1 className='text-3xl'>
-        {isError
-          ? 'Erreur dans la récupération des annonces'
-          : isLoading
-          ? 'Chargement...'
-          : data.allAds.length
-          ? 'Toutes les annonces'
-          : 'Aucune annonces'}
-      </h1>
-
-      {Boolean(data.allAds.length) && <CardList listAds={data.allAds} />}
+      {isError ? (
+        <Alert variant='destructive'>
+          <AlertCircle className='h-4 w-4' />
+          <AlertTitle>Erreur</AlertTitle>
+          <AlertDescription>Récupération des annonces impossible</AlertDescription>
+        </Alert>
+      ) : (
+        <>
+          <h1 className='text-3xl mb-6'>{data.allAds.length ? 'Toutes les annonces' : 'Aucune annonces'}</h1>
+          {Boolean(data.allAds.length) && <CardList listAds={data.allAds} />}
+        </>
+      )}
     </section>
   )
 }
